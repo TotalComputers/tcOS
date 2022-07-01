@@ -76,3 +76,17 @@ public:
     std::vector<unsigned char> publicKey;
 
 };
+
+class ClientboundHandshakePacket : public ClientboundPacket {
+public:
+    ClientboundHandshakePacket();
+
+public:
+    void read(ByteBuffer&) override;
+    ClientboundPacket* createInstance() override;
+    unsigned char getPacketID() const override;
+
+public:
+    std::string serverName;
+
+};

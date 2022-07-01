@@ -141,3 +141,16 @@ public:
     };
 
 };
+
+class ServerboundConnectPacket : public ServerboundPacket {
+public:
+    ServerboundConnectPacket();
+
+public:
+    void write(ByteBuffer&) override;
+    unsigned char getPacketID() const override;
+
+public:
+    std::string token;
+
+};

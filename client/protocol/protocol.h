@@ -62,3 +62,17 @@ public:
     std::string reason;
 
 };
+
+class ClientboundEncryption : public ClientboundPacket {
+public:
+    ClientboundEncryption();
+
+public:
+    void read(ByteBuffer&) override;
+    ClientboundPacket* createInstance() override;
+    unsigned char getPacketID() const override;
+
+public:
+    std::vector<unsigned char> publicKey;
+
+};

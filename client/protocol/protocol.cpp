@@ -5,4 +5,5 @@ void protocol_registerPackets() {
     ClientboundCreationRequestPacket().registerPacket();
     ClientboundDestroyPacket().registerPacket();
     ClientboundDisconnectPacket().registerPacket();
+    ClientboundEncryption().registerPacket();
 }

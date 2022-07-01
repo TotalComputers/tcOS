@@ -1,6 +1,7 @@
 #pragma once
 
 #include "packet.h"
+#include <vector>
 
 void protocol_registerPackets();
 
@@ -171,5 +172,18 @@ public:
         OK = 0,
         ERROR = 1
     };
+
+};
+
+class ServerboundEncryptionPacket : public ServerboundPacket {
+public:
+    ServerboundEncryptionPacket();
+
+public:
+    void write(ByteBuffer&) override;
+    unsigned char getPacketID() const override;
+
+public:
+    std::vector<unsigned char> secret;
 
 };

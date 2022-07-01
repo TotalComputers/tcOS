@@ -4,4 +4,5 @@ void protocol_registerPackets() {
     ClientboundConnectionSuccessPacket().registerPacket();
     ClientboundCreationRequestPacket().registerPacket();
     ClientboundDestroyPacket().registerPacket();
+    ClientboundDisconnectPacket().registerPacket();
 }

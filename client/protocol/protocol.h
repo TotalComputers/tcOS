@@ -48,3 +48,17 @@ public:
     short id;
 
 };
+
+class ClientboundDisconnectPacket : public ClientboundPacket {
+public:
+    ClientboundDisconnectPacket();
+
+public:
+    void read(ByteBuffer&) override;
+    ClientboundPacket* createInstance() override;
+    unsigned char getPacketID() const override;
+
+public:
+    std::string reason;
+
+};

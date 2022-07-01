@@ -118,3 +118,26 @@ public:
     long long payload;
 
 };
+
+class ClientboundTouchPacket : public ClientboundPacket {
+public:
+    ClientboundTouchPacket();
+
+public:
+    void read(ByteBuffer&) override;
+    ClientboundPacket* createInstance() override;
+    unsigned char getPacketID() const override;
+
+public:
+    short id;
+    short x;
+    short y;
+    unsigned char type;
+    bool admin;
+
+    enum ClickType {
+        LEFT_CLICK = 0,
+        RIGHT_CLICK = 1
+    };
+
+};

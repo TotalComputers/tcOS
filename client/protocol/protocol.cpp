@@ -9,4 +9,5 @@ void protocol_registerPackets() {
     ClientboundHandshakePacket().registerPacket();
     ClientboundPalettePacket().registerPacket();
     ClientboundPingPacket().registerPacket();
+    ClientboundTouchPacket().registerPacket();
 }

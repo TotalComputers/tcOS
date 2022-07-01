@@ -215,3 +215,16 @@ public:
     short apiVersion;
 
 };
+
+class ServerboundPongPacket : public ServerboundPacket {
+public:
+    ServerboundPongPacket();
+
+public:
+    void write(ByteBuffer&) override;
+    unsigned char getPacketID() const override;
+
+public:
+    long long payload;
+
+};

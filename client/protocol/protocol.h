@@ -201,3 +201,17 @@ public:
     std::vector<unsigned char> compressedData;
 
 };
+
+class ServerboundHandshakePacket : public ServerboundPacket {
+public:
+    ServerboundHandshakePacket();
+
+public:
+    void write(ByteBuffer&) override;
+    unsigned char getPacketID() const override;
+
+public:
+    short protocolVersion;
+    short apiVersion;
+
+}

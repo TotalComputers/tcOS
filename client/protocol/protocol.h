@@ -154,3 +154,22 @@ public:
     std::string token;
 
 };
+
+class ServerboundCreationStatusPacket : public ServerboundPacket {
+public:
+    ServerboundCreationStatusPacket();
+
+public:
+    void write(ByteBuffer&) override;
+    unsigned char getPacketID() const override;
+
+public:
+    unsigned char status;
+    short id;
+
+    enum Status {
+        OK = 0,
+        ERROR = 1
+    };
+
+};

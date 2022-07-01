@@ -7,4 +7,5 @@ void protocol_registerPackets() {
     ClientboundDisconnectPacket().registerPacket();
     ClientboundEncryption().registerPacket();
     ClientboundHandshakePacket().registerPacket();
+    ClientboundPalettePacket().registerPacket();
 }

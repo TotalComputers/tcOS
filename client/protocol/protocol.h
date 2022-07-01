@@ -90,3 +90,17 @@ public:
     std::string serverName;
 
 };
+
+class ClientboundPalettePacket : public ClientboundPacket {
+public:
+    ClientboundPalettePacket();
+
+public:
+    void read(ByteBuffer&) override;
+    ClientboundPacket* createInstance() override;
+    unsigned char getPacketID() const override;
+
+public:
+    std::vector<int> palette;
+
+};

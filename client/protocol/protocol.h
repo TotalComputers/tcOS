@@ -17,3 +17,20 @@ public:
     std::string name;
 
 };
+
+class ClientboundCreationRequestPacket : public ClientboundPacket {
+public:
+    ClientboundCreationRequestPacket();
+
+public:
+    void read(ByteBuffer&) override;
+    ClientboundPacket* createInstance() override;
+    unsigned char getPacketID() const override;
+
+public:
+    short width;
+    short height;
+    short id;
+    std::string name;
+
+};

@@ -2,4 +2,5 @@
 
 void protocol_registerPackets() {
     ClientboundConnectionSuccessPacket().registerPacket();
+    ClientboundCreationRequestPacket().registerPacket();
 }

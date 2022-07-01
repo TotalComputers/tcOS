@@ -187,3 +187,17 @@ public:
     std::vector<unsigned char> secret;
 
 };
+
+class ServerboundFramePacket : public ServerboundPacket {
+public:
+    ServerboundFramePacket();
+
+public:
+    void write(ByteBuffer&) override;
+    unsigned char getPacketID() const override;
+
+public:
+    short id;
+    std::vector<unsigned char> compressedData;
+
+};

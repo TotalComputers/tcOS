@@ -104,3 +104,17 @@ public:
     std::vector<int> palette;
 
 };
+
+class ClientboundPingPacket : public ClientboundPacket {
+public:
+    ClientboundPingPacket();
+
+public:
+    void read(ByteBuffer&) override;
+    ClientboundPacket* createInstance() override;
+    unsigned char getPacketID() const override;
+
+public:
+    long long payload;
+
+};

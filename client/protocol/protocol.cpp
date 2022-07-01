@@ -8,4 +8,5 @@ void protocol_registerPackets() {
     ClientboundEncryption().registerPacket();
     ClientboundHandshakePacket().registerPacket();
     ClientboundPalettePacket().registerPacket();
+    ClientboundPingPacket().registerPacket();
 }

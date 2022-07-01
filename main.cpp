@@ -1,20 +1,17 @@
-#include "client.h"
-#include "ByteBuffer.h"
-#include <stdio.h>
+#include "client/protocol/protocol.h"
+#include "client/ByteBuffer.h"
+#include "client/client.h"
+#include <iostream>
 
 int main() {
-    ByteBuffer test;
-    test.writeByte(120);
-    test.writeInt(1234567);
-    test.writeLong(INT64_MAX);
-    test.writeVarLong(14235834664);
-    test.writeString("test string");
+    protocol_registerPackets();
 
-    printf("%d\n", test.readByte());
-    printf("%d\n", test.readInt());
-    printf("%lld\n", test.readLong());
-    printf("%lld\n", test.readVarLong());
-    printf("%s\n", test.readString().data());
-    
+    ByteBuffer test;
+    test.writeString("Clientbound Connection Success packet test");
+
+    auto instance = (ClientboundConnectionSuccessPacket*)ClientboundPacket::createInstanceFromID(0xB4);
+    instance->read(test);
+    std::cout << instance->name << std::endl;
+
     tcp_connect("localhost", 29077);
 }

@@ -1,4 +1,5 @@
 #include "connection_context.h"
+#include "client.h"
 #include <memory>
 #include <iostream>
 
@@ -15,6 +16,22 @@ void ConnectionContext::write(void* object) {
             return res;
         }
         return true;
+    });
+
+    if(!src) return;
+    ByteBuffer* buf = (ByteBuffer*)src;
+
+    uv_buf_t buffer;
+    buffer.base = (char*)buf->data.data();
+    buffer.len = buf->data.size();
+
+    uv_write_t* req = (uv_write_t*)malloc(sizeof(uv_write_t));
+    uv_write(req, stream, &buffer, 1, [](uv_write_t* req, int status) {
+        if(status) {
+            std::cout << "Unable to write data: " << uv_strerror(status);
+            return;
+        }
+        free(req);
     });
 }
 

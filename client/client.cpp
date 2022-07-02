@@ -2,10 +2,15 @@
 #include <cstdlib>
 
 static uv_loop_t* loop = uv_default_loop();
+static Pipeline* pipeline;
+static ConnectionContext* ctx;
 
-static void on_close(uv_handle_t* handle)
-{
-  printf("closed\n");
+static void on_close(uv_handle_t* handle){
+    ctx->pipeline->forEach([](AbstractHandler* handler, int idx) {
+        if(handler->isInboundHandler())
+            return ((InboundHandler*)handler)->onDisconnect(ctx);
+        return true;
+    });
 }
 
 static void alloc_cb(uv_handle_t* handle, size_t size, uv_buf_t* buf) {
@@ -15,7 +20,8 @@ static void alloc_cb(uv_handle_t* handle, size_t size, uv_buf_t* buf) {
 static void on_read(uv_stream_t* tcp, ssize_t nread, const uv_buf_t* buf)
 {
     if(nread >= 0) {
-        printf("read: %s\n", buf->base);
+        ByteBuffer data((unsigned char*)buf->base, nread);
+        ctx->read(data);
     }
     else {
         uv_close((uv_handle_t*)tcp, on_close);
@@ -32,7 +38,20 @@ static void on_connect(uv_connect_t* con, int status) {
 
     uv_stream_t* stream = con->handle;
     free(con);
+
+    ctx = new ConnectionContext(pipeline, stream);
+
+    ctx->pipeline->forEach([](AbstractHandler* handler, int idx) {
+        if(handler->isInboundHandler())
+            return ((InboundHandler*)handler)->onConnect(ctx);
+        return true;
+    });
+
     uv_read_start(stream, alloc_cb, on_read);
+}
+
+void tcp_set_pipeline(Pipeline* p) {
+    pipeline = p;
 }
 
 void tcp_connect(const char* host, int port) {

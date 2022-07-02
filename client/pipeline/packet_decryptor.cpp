@@ -1,5 +1,5 @@
-#include "pipeline.h"
 #include "../encryption/encryption.h"
+#include "pipeline.h"
 
 bool PacketDecryptor::onConnect(ConnectionContext*) {
     return true;

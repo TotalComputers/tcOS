@@ -1,5 +1,5 @@
-#include "pipeline.h"
 #include "../encryption/encryption.h"
+#include "pipeline.h"
 
 bool PacketEncryptor::encode(ConnectionContext* ctx, void* in, void*& out) {
     out = new ByteBuffer();

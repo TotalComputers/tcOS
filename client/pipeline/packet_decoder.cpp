@@ -1,5 +1,5 @@
-#include "pipeline.h"
 #include "../protocol/packet.h"
+#include "pipeline.h"
 #include <iostream>
 
 bool PacketDecoder::onConnect(ConnectionContext*) {

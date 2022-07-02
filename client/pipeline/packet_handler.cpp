@@ -1,5 +1,5 @@
-#include "pipeline.h"
 #include "../protocol/protocol.h"
+#include "pipeline.h"
 #include <iostream>
 
 bool PacketHandler::onConnect(ConnectionContext* ctx) {

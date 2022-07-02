@@ -1,5 +1,5 @@
-#include "pipeline.h"
 #include "../protocol/protocol.h"
+#include "pipeline.h"
 
 bool PacketEncoder::encode(ConnectionContext* ctx, void* src, void*& dst) {
     dst = new ByteBuffer();
@@ -15,6 +15,6 @@ bool PacketEncoder::encode(ConnectionContext* ctx, void* src, void*& dst) {
 
     buf->writeInt(tmp.readableBytes());
     buf->writeBytes(tmp.data);
-    
+
     return true;
 };

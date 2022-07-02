@@ -27,15 +27,21 @@ jobs:
         working-directory: ${{github.workspace}}/build
         run: ctest -C ${{env.BUILD_TYPE}}
       - if: matrix.os == 'windows-latest'
-        name: Upload artifact
+        name: Upload libuv (Windows)
+        uses: actions/upload-artifact@v2
+        with:
+          name: tcOS-${{ matrix.os }}
+          path: |
+            build/thirdparty/libuv/${{env.BUILD_TYPE}}/*.dll
+      - if: matrix.os == 'windows-latest'
+        name: Upload executable (Windows)
         uses: actions/upload-artifact@v2
         with:
           name: tcOS-${{ matrix.os }}
           path: |
             build/${{env.BUILD_TYPE}}/*.exe
-            build/thirdparty/libuv/${{env.BUILD_TYPE}}/*.dll
       - if: matrix.os == 'ubuntu-latest'
-        name: Upload artifact
+        name: Upload executable (Linux)
         uses: actions/upload-artifact@v2
         with:
           name: tcOS-${{ matrix.os }}

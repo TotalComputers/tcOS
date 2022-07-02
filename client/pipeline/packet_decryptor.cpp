@@ -1,3 +1,4 @@
+#include "../protocol/protocol.h"
 #include "../encryption/encryption.h"
 #include "pipeline.h"
 

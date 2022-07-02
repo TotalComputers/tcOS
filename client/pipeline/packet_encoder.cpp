@@ -1,5 +1,6 @@
 #include "../protocol/protocol.h"
 #include "pipeline.h"
+#include <iostream>
 
 bool PacketEncoder::encode(ConnectionContext* ctx, void* src, void*& dst) {
     dst = new ByteBuffer();
@@ -15,6 +16,8 @@ bool PacketEncoder::encode(ConnectionContext* ctx, void* src, void*& dst) {
 
     buf->writeInt(tmp.readableBytes());
     buf->writeBytes(tmp.data);
+
+    std::cout << "Sent packet: 0x" << std::hex << (int)packet->getPacketID() << std::endl;
 
     return true;
 };

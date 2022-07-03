@@ -50,6 +50,10 @@ void handleHandshake(ConnectionContext* ctx, ClientboundHandshakePacket* packet)
     ctx->write(connect);
 }
 
+void handleDisconnect(ConnectionContext* ctx, ClientboundDisconnectPacket* packet) {
+    std::cout << "Disconnected: " << packet->reason << std::endl;
+}
+
 void PacketHandler::handle(ConnectionContext* ctx, void* raw) {
     ClientboundPacket* packet = (ClientboundPacket*)raw;
 
@@ -58,5 +62,6 @@ void PacketHandler::handle(ConnectionContext* ctx, void* raw) {
     switch(packet->getPacketID()) {
         case 0xC3: handleEncryption(ctx, (ClientboundEncryption*)raw); break;
         case 0xB1: handleHandshake(ctx, (ClientboundHandshakePacket*)raw); break;
+        case 0xB2: handleDisconnect(ctx, (ClientboundDisconnectPacket*)raw); break;
     }
 }

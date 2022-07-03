@@ -96,6 +96,10 @@ void handleDestroy(ConnectionContext* ctx, ClientboundDestroyPacket* packet) {
     IOStorage::remove(packet->id);
 }
 
+void handleTouch(ConnectionContext* ctx, ClientboundTouchPacket* packet) {
+    IOStorage::request(packet->id)->handle_touch(packet->x, packet->y, (bool)packet->type, packet->admin);
+};
+
 void PacketHandler::handle(ConnectionContext* ctx, void* raw) {
     ClientboundPacket* packet = (ClientboundPacket*)raw;
 
@@ -110,5 +114,6 @@ void PacketHandler::handle(ConnectionContext* ctx, void* raw) {
         case 0xB5: handlePing(ctx, (ClientboundPingPacket*)raw); break;
         case 0xB7: handleCreationRequest(ctx, (ClientboundCreationRequestPacket*)raw, io_factory); break;
         case 0xB9: handleDestroy(ctx, (ClientboundDestroyPacket*)raw); break;
+        case 0xC2: handleTouch(ctx, (ClientboundTouchPacket*)raw); break;
     }
 }

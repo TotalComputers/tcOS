@@ -4,7 +4,7 @@
 #include "input_handler.h"
 #include <string>
 
-class IOInterface : public FrameProvider, InputHandler {
+class IOInterface : public FrameProvider, public InputHandler {
 public:
     virtual void init() = 0;
     virtual void destroy() = 0;

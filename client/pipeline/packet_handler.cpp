@@ -4,6 +4,9 @@
 #include <openssl/rand.h>
 #include <iostream>
 
+PacketHandler::PacketHandler(std::string token)
+    : token(token) {}
+
 bool PacketHandler::onConnect(ConnectionContext* ctx) {
     ServerboundHandshakePacket* handshake = new ServerboundHandshakePacket();
     handshake->apiVersion = 0;
@@ -39,14 +42,14 @@ void handleEncryption(ConnectionContext* ctx, ClientboundEncryption* packet) {
 
 }
 
-void handleHandshake(ConnectionContext* ctx, ClientboundHandshakePacket* packet) {
+void handleHandshake(ConnectionContext* ctx, ClientboundHandshakePacket* packet, const std::string& token) {
     ctx->pipeline->addFirst("defrag", new PacketDefragmentation());
     ctx->pipeline->addBefore("packet_handler", "prefixer", new PacketLengthPrefixer());
 
     std::cout << "Connecting to the " << packet->serverName << " server" << std::endl;
 
     ServerboundConnectPacket* connect = new ServerboundConnectPacket();
-    connect->token = "0";
+    connect->token = token;
     ctx->write(connect);
 }
 
@@ -61,7 +64,7 @@ void PacketHandler::handle(ConnectionContext* ctx, void* raw) {
 
     switch(packet->getPacketID()) {
         case 0xC3: handleEncryption(ctx, (ClientboundEncryption*)raw); break;
-        case 0xB1: handleHandshake(ctx, (ClientboundHandshakePacket*)raw); break;
+        case 0xB1: handleHandshake(ctx, (ClientboundHandshakePacket*)raw, token); break;
         case 0xB2: handleDisconnect(ctx, (ClientboundDisconnectPacket*)raw); break;
     }
 }

@@ -31,9 +31,15 @@ public:
 
 class PacketHandler : public FinalHandler {
 public:
+    PacketHandler(std::string);
+
+public:
     bool onConnect(ConnectionContext*) override;
     bool onDisconnect(ConnectionContext*) override;
     void handle(ConnectionContext*, void*) override;
+
+private:
+    std::string token;
 
 };
 

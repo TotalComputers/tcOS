@@ -1,5 +1,6 @@
-#include "pipeline.h"
+
 #include "../protocol/protocol.h"
+#include "pipeline.h"
 
 bool PacketDefragmentation::onConnect(ConnectionContext*) {
     return true;

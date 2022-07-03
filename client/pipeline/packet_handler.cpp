@@ -57,6 +57,10 @@ void handleDisconnect(ConnectionContext* ctx, ClientboundDisconnectPacket* packe
     std::cout << "Disconnected: " << packet->reason << std::endl;
 }
 
+void handleConnectionSuccess(ConnectionContext* ctx, ClientboundConnectionSuccessPacket* packet) {
+    std::cout << "Connected to the player " << packet->name << std::endl;
+}
+
 void PacketHandler::handle(ConnectionContext* ctx, void* raw) {
     ClientboundPacket* packet = (ClientboundPacket*)raw;
 
@@ -66,5 +70,6 @@ void PacketHandler::handle(ConnectionContext* ctx, void* raw) {
         case 0xC3: handleEncryption(ctx, (ClientboundEncryption*)raw); break;
         case 0xB1: handleHandshake(ctx, (ClientboundHandshakePacket*)raw, token); break;
         case 0xB2: handleDisconnect(ctx, (ClientboundDisconnectPacket*)raw); break;
+        case 0xB4: handleConnectionSuccess(ctx, (ClientboundConnectionSuccessPacket*)raw); break;
     }
 }

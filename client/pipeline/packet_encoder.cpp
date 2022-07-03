@@ -17,7 +17,7 @@ bool PacketEncoder::encode(ConnectionContext* ctx, void* src, void*& dst) {
     buf->writeInt(tmp.readableBytes());
     buf->writeBytes(tmp.data);
 
-    std::cout << "Sent packet: 0x" << std::hex << (int)packet->getPacketID() << std::endl;
+    std::cout << "Sent packet: 0x" << std::hex << (int)packet->getPacketID() << std::dec << std::endl;
 
     return true;
 };

@@ -2,11 +2,12 @@
 #include "pipeline.h"
 #include "../encryption/encryption.h"
 #include "../graphics/color.h"
+#include "../../common/io_storage.h"
 #include <openssl/rand.h>
 #include <iostream>
 
-PacketHandler::PacketHandler(std::string token)
-    : token(token) {}
+PacketHandler::PacketHandler(std::string token, IOFactory* factory)
+    : token(token), io_factory(factory) {}
 
 bool PacketHandler::onConnect(ConnectionContext* ctx) {
     ServerboundHandshakePacket* handshake = new ServerboundHandshakePacket();
@@ -76,10 +77,29 @@ void handlePing(ConnectionContext* ctx, ClientboundPingPacket* packet) {
     ctx->write(pong);
 }
 
+void handleCreationRequest(ConnectionContext* ctx, ClientboundCreationRequestPacket* packet, IOFactory* io_factory) {
+    std::shared_ptr<IOInterface> i = io_factory->create();
+    i->id = packet->id;
+    i->name = packet->name;
+    i->set_frame(new_empty_image(packet->width, packet->height));
+    IOStorage::put(i);
+    i->init();
+
+    ServerboundCreationStatusPacket* status = new ServerboundCreationStatusPacket();
+    status->id = packet->id;
+    status->status = ServerboundCreationStatusPacket::OK;
+    ctx->write(status);
+}
+
+void handleDestroy(ConnectionContext* ctx, ClientboundDestroyPacket* packet) {
+    IOStorage::request(packet->id)->destroy();
+    IOStorage::remove(packet->id);
+}
+
 void PacketHandler::handle(ConnectionContext* ctx, void* raw) {
     ClientboundPacket* packet = (ClientboundPacket*)raw;
 
-    std::cout << "Received packet: 0x" << std::hex << (int)packet->getPacketID() << std::endl;
+    std::cout << "Received packet: 0x" << std::hex << (int)packet->getPacketID() << std::dec << std::endl;
 
     switch(packet->getPacketID()) {
         case 0xC3: handleEncryption(ctx, (ClientboundEncryption*)raw); break;
@@ -88,5 +108,7 @@ void PacketHandler::handle(ConnectionContext* ctx, void* raw) {
         case 0xB4: handleConnectionSuccess(ctx, (ClientboundConnectionSuccessPacket*)raw); break;
         case 0xC1: handlePalette(ctx, (ClientboundPalettePacket*)raw); break;
         case 0xB5: handlePing(ctx, (ClientboundPingPacket*)raw); break;
+        case 0xB7: handleCreationRequest(ctx, (ClientboundCreationRequestPacket*)raw, io_factory); break;
+        case 0xB9: handleDestroy(ctx, (ClientboundDestroyPacket*)raw); break;
     }
 }

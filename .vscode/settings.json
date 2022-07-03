@@ -52,6 +52,7 @@
         "unordered_map": "cpp",
         "xhash": "cpp",
         "deque": "cpp",
-        "algorithm": "cpp"
+        "algorithm": "cpp",
+        "input_handler.h": "c"
     }
 }

@@ -1,5 +1,6 @@
 #include "../connection_context.h"
 #include "../protocol/protocol.h"
+#include "../../common/io_factory.h"
 
 class PacketDecoder : public InboundHandler {
 public:
@@ -31,7 +32,7 @@ public:
 
 class PacketHandler : public FinalHandler {
 public:
-    PacketHandler(std::string);
+    PacketHandler(std::string, IOFactory*);
 
 public:
     bool onConnect(ConnectionContext*) override;
@@ -40,6 +41,7 @@ public:
 
 private:
     std::string token;
+    IOFactory* io_factory;
 
 };
 

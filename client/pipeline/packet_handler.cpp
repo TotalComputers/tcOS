@@ -1,6 +1,7 @@
 #include "../protocol/protocol.h"
 #include "pipeline.h"
 #include "../encryption/encryption.h"
+#include "../graphics/color.h"
 #include <openssl/rand.h>
 #include <iostream>
 
@@ -61,6 +62,14 @@ void handleConnectionSuccess(ConnectionContext* ctx, ClientboundConnectionSucces
     std::cout << "Connected to the player " << packet->name << std::endl;
 }
 
+void handlePalette(ConnectionContext* ctx, ClientboundPalettePacket* packet) {
+    std::cout << "Setting up palette... ";
+    set_palette((const uint32_t*)packet->palette.data(), packet->palette.size());
+    std::cout << "Caching colors... ";
+    cache_palette();
+    std::cout << "Done. " << std::endl;
+}
+
 void PacketHandler::handle(ConnectionContext* ctx, void* raw) {
     ClientboundPacket* packet = (ClientboundPacket*)raw;
 
@@ -71,5 +80,6 @@ void PacketHandler::handle(ConnectionContext* ctx, void* raw) {
         case 0xB1: handleHandshake(ctx, (ClientboundHandshakePacket*)raw, token); break;
         case 0xB2: handleDisconnect(ctx, (ClientboundDisconnectPacket*)raw); break;
         case 0xB4: handleConnectionSuccess(ctx, (ClientboundConnectionSuccessPacket*)raw); break;
+        case 0xC1: handlePalette(ctx, (ClientboundPalettePacket*)raw); break;
     }
 }

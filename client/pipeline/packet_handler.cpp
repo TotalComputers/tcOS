@@ -17,7 +17,7 @@ bool PacketHandler::onDisconnect(ConnectionContext*) {
     return true;
 }
 
-void PacketHandler::handleEncryption(ConnectionContext* ctx, ClientboundEncryption* packet) {
+void handleEncryption(ConnectionContext* ctx, ClientboundEncryption* packet) {
     RSA* rsa = rsa_decode_key(packet->publicKey);
     if(!rsa) {
         std::cout << "Unable to decode RSA public key" << std::endl;
@@ -39,12 +39,24 @@ void PacketHandler::handleEncryption(ConnectionContext* ctx, ClientboundEncrypti
 
 }
 
+void handleHandshake(ConnectionContext* ctx, ClientboundHandshakePacket* packet) {
+    ctx->pipeline->addFirst("defrag", new PacketDefragmentation());
+    ctx->pipeline->addBefore("packet_handler", "prefixer", new PacketLengthPrefixer());
+
+    std::cout << "Connecting to the " << packet->serverName << " server" << std::endl;
+
+    ServerboundConnectPacket* connect = new ServerboundConnectPacket();
+    connect->token = "0";
+    ctx->write(connect);
+}
+
 void PacketHandler::handle(ConnectionContext* ctx, void* raw) {
     ClientboundPacket* packet = (ClientboundPacket*)raw;
 
     std::cout << "Received packet: 0x" << std::hex << (int)packet->getPacketID() << std::endl;
 
     switch(packet->getPacketID()) {
-        case 0xC3: handleEncryption(ctx, (ClientboundEncryption*)raw);
+        case 0xC3: handleEncryption(ctx, (ClientboundEncryption*)raw); break;
+        case 0xB1: handleHandshake(ctx, (ClientboundHandshakePacket*)raw); break;
     }
 }

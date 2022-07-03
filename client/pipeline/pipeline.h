@@ -35,7 +35,22 @@ public:
     bool onDisconnect(ConnectionContext*) override;
     void handle(ConnectionContext*, void*) override;
 
+};
+
+class PacketLengthPrefixer : public OutboundHandler {
+public:
+    bool encode(ConnectionContext*, void*, void*&) override;
+
+};
+
+class PacketDefragmentation : public InboundHandler {
+public:
+    bool onConnect(ConnectionContext*) override;
+    bool onDisconnect(ConnectionContext*) override;
+    bool decode(ConnectionContext*, void*, std::vector<void*>&) override;
+
 private:
-    void handleEncryption(ConnectionContext*, ClientboundEncryption*);
+    ByteBuffer* buf;
+    int remaining = 0;
 
 };

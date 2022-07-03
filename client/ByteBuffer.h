@@ -33,6 +33,8 @@ public:
     std::vector<unsigned char> readBytes(size_t);
     void writeBytes(std::vector<unsigned char>);
     void writeBytes(const unsigned char*, size_t);
+    void writeBytes(ByteBuffer&, size_t);
+    void writeBytes(ByteBuffer&);
 
     void ensureWritableBytes(size_t);
     size_t readableBytes();

@@ -150,6 +150,16 @@ void ByteBuffer::writeBytes(const unsigned char* data, size_t n) {
     }
 }
 
+void ByteBuffer::writeBytes(ByteBuffer& buf, size_t s) {
+    ensureWritableBytes(s);
+    for(size_t i = 0; i < s; i++)
+        data[writerIdx++] = buf.readByte();
+}
+
+void ByteBuffer::writeBytes(ByteBuffer& buf) {
+    writeBytes(buf, buf.readableBytes());
+}
+
 void ByteBuffer::ensureWritableBytes(size_t n) {
     if(data.size() < n + writerIdx)
         data.resize(writerIdx + n);

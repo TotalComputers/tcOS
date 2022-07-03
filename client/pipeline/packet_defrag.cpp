@@ -2,6 +2,10 @@
 #include "../protocol/protocol.h"
 #include "pipeline.h"
 
+#if defined(__unix__) || defined(linux)
+using std::min;
+#endif
+
 bool PacketDefragmentation::onConnect(ConnectionContext*) {
     return true;
 }
@@ -18,7 +22,7 @@ bool PacketDefragmentation::decode(ConnectionContext*, void* in, std::vector<voi
             buf = new ByteBuffer();
             remaining = inbuf->readVarInt();
         }
-        int toWrite = std::min(remaining, (int)inbuf->readableBytes());
+        int toWrite = min(remaining, (int)inbuf->readableBytes());
         buf->writeBytes(*inbuf, toWrite);
         remaining -= toWrite;
         if(remaining == 0) {

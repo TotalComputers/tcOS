@@ -67,7 +67,7 @@ void ByteBuffer::writeLong(long long value) {
     int shift = sizeof(value) * 8;
     for(int i = 0; i < sizeof(value); i++) {
         shift -= 8;
-        data[writerIdx++] = (value & (0xFF << shift)) >> shift;
+        data[writerIdx++] = (value & ((long long)0xFF << shift)) >> shift;
     }
 }
 

@@ -70,6 +70,12 @@ void handlePalette(ConnectionContext* ctx, ClientboundPalettePacket* packet) {
     std::cout << "Done. " << std::endl;
 }
 
+void handlePing(ConnectionContext* ctx, ClientboundPingPacket* packet) {
+    ServerboundPongPacket* pong = new ServerboundPongPacket();
+    pong->payload = packet->payload;
+    ctx->write(pong);
+}
+
 void PacketHandler::handle(ConnectionContext* ctx, void* raw) {
     ClientboundPacket* packet = (ClientboundPacket*)raw;
 
@@ -81,5 +87,6 @@ void PacketHandler::handle(ConnectionContext* ctx, void* raw) {
         case 0xB2: handleDisconnect(ctx, (ClientboundDisconnectPacket*)raw); break;
         case 0xB4: handleConnectionSuccess(ctx, (ClientboundConnectionSuccessPacket*)raw); break;
         case 0xC1: handlePalette(ctx, (ClientboundPalettePacket*)raw); break;
+        case 0xB5: handlePing(ctx, (ClientboundPingPacket*)raw); break;
     }
 }

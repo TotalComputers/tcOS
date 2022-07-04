@@ -19,7 +19,5 @@ bool PacketEncoder::encode(ConnectionContext* ctx, void* src, void*& dst) {
 
     std::cout << "Sent packet: 0x" << std::hex << (int)packet->getPacketID() << std::dec << std::endl;
 
-    delete packet;
-
     return true;
 };

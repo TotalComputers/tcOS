@@ -40,8 +40,6 @@ bool PacketDecoder::decode(ConnectionContext* ctx, void* src, std::vector<void*>
     packet->read(*buf);
 
     dst.push_back(packet);
-
-    delete buf;
     
     return true;
 }

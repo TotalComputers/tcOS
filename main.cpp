@@ -27,7 +27,7 @@ public:
         buffer.data = nullptr;
     }
 
-    image_t provide_frame() override {
+    image_t& provide_frame() override {
         std::cout << "IO::provide_frame" << std::endl;
         return buffer;
     }

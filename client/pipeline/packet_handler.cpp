@@ -19,6 +19,7 @@ bool PacketHandler::onConnect(ConnectionContext* ctx) {
     handshake->apiVersion = 0;
     handshake->protocolVersion = 2;
     ctx->write(handshake);
+    delete handshake;
 
     return true;
 }
@@ -41,12 +42,14 @@ void handleEncryption(ConnectionContext* ctx, ClientboundEncryption* packet) {
     ServerboundEncryptionPacket* response = new ServerboundEncryptionPacket();
     response->secret = rsa_encrypt(rsa, secret);
     ctx->write(response);
+    delete response;
 
     aes_init(secret);
 
     ctx->pipeline->addBefore("packet_decoder", "decryptor", new PacketDecryptor());
     ctx->pipeline->addAfter("packet_encoder", "encryptor", new PacketEncryptor());
 
+    delete packet;
 }
 
 void handleHandshake(ConnectionContext* ctx, ClientboundHandshakePacket* packet, const std::string& token) {
@@ -58,14 +61,19 @@ void handleHandshake(ConnectionContext* ctx, ClientboundHandshakePacket* packet,
     ServerboundConnectPacket* connect = new ServerboundConnectPacket();
     connect->token = token;
     ctx->write(connect);
+    delete connect;
+
+    delete packet;
 }
 
 void handleDisconnect(ConnectionContext* ctx, ClientboundDisconnectPacket* packet) {
     std::cout << "Disconnected: " << packet->reason << std::endl;
+    delete packet;
 }
 
 void handleConnectionSuccess(ConnectionContext* ctx, ClientboundConnectionSuccessPacket* packet) {
     std::cout << "Connected to the player " << packet->name << std::endl;
+    delete packet;
 }
 
 void handlePalette(ConnectionContext* ctx, ClientboundPalettePacket* packet) {
@@ -74,12 +82,17 @@ void handlePalette(ConnectionContext* ctx, ClientboundPalettePacket* packet) {
     std::cout << "Caching colors... ";
     cache_palette();
     std::cout << "Done. " << std::endl;
+    
+    delete packet;
 }
 
 void handlePing(ConnectionContext* ctx, ClientboundPingPacket* packet) {
     ServerboundPongPacket* pong = new ServerboundPongPacket();
     pong->payload = packet->payload;
     ctx->write(pong);
+    delete pong;
+
+    delete packet;
 }
 
 void handleCreationRequest(ConnectionContext* ctx, ClientboundCreationRequestPacket* packet, IOFactory* io_factory) {
@@ -94,10 +107,11 @@ void handleCreationRequest(ConnectionContext* ctx, ClientboundCreationRequestPac
     status->id = packet->id;
     status->status = ServerboundCreationStatusPacket::OK;
     ctx->write(status);
+    delete status;
 
     global_tasks[packet->id] = new RepeatingTask();
     global_tasks[packet->id]->start([=]() {
-        image_t frame = i->provide_frame();
+        image_t& frame = i->provide_frame();
         if(!frame.data) return;
         std::vector<unsigned char> indices = match_image(frame.raw8, frame.width, frame.height, 4);
         std::vector<unsigned char> sliced = slice_indices(indices, frame.width, frame.height);
@@ -106,7 +120,10 @@ void handleCreationRequest(ConnectionContext* ctx, ClientboundCreationRequestPac
         frame_packet->id = i->id;
         frame_packet->compressedData = deflated;
         ctx->write(frame_packet, true);
+        delete frame_packet;
     }, 1000, 1000 / 20);
+
+    delete packet;
 }
 
 void handleDestroy(ConnectionContext* ctx, ClientboundDestroyPacket* packet) {
@@ -117,10 +134,13 @@ void handleDestroy(ConnectionContext* ctx, ClientboundDestroyPacket* packet) {
     io->destroy();
     IOStorage::remove(packet->id);
     io.reset();
+
+    delete packet;
 }
 
 void handleTouch(ConnectionContext* ctx, ClientboundTouchPacket* packet) {
     IOStorage::request(packet->id)->handle_touch(packet->x, packet->y, (bool)packet->type, packet->admin);
+    delete packet;
 };
 
 void PacketHandler::handle(ConnectionContext* ctx, void* raw) {
@@ -139,6 +159,4 @@ void PacketHandler::handle(ConnectionContext* ctx, void* raw) {
         case 0xB9: handleDestroy(ctx, (ClientboundDestroyPacket*)raw); break;
         case 0xC2: handleTouch(ctx, (ClientboundTouchPacket*)raw); break;
     }
-
-    delete packet;
 }

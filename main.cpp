@@ -8,6 +8,17 @@ class TestIO : public IOInterface {
 public:
     void init() override {
         std::cout << "IO::init {id=" << id <<", name=" << name << "}" << std::endl;
+        for(int y = 0; y < buffer.height; y++) {
+            for(int x = 0; x < buffer.width; x++) {
+                int idx = y * buffer.width + x;
+                color_argb_t color;
+                color.a = 255;
+                color.r = (uint8_t)((double(x) / buffer.width) * 255);
+                color.g = (uint8_t)((double(y) / buffer.height) * 255);
+                color.b = 0;
+                buffer.data[idx] = color;
+            }
+        }
     }
 
     void destroy() override {
@@ -16,12 +27,12 @@ public:
 
     image_raw8_t provide_frame() override {
         std::cout << "IO::provide_frame" << std::endl;
-        return buffer;
+        return buffer.as_c_image().as_raw_image().as_raw_image();
     }
 
     void set_frame(image_t frame) override {
         std::cout << "IO::set_frame {width=" << frame.width << ", height=" << frame.height << "}" << std::endl;
-        buffer = frame.as_c_image().as_raw_image().as_raw_image();
+        buffer = frame;
     }
     
     void handle_touch(int x, int y, bool type, bool admin) override {
@@ -29,7 +40,7 @@ public:
     }
 
 public:
-    image_raw8_t buffer;
+    image_t buffer;
 
 };
 

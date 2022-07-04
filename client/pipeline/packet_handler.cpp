@@ -4,6 +4,8 @@
 #include "../graphics/color.h"
 #include "../../common/io_storage.h"
 #include "../../common/timer.h"
+#include "../compression.h"
+#include "../graphics/slicing.h"
 #include <openssl/rand.h>
 #include <iostream>
 
@@ -94,8 +96,15 @@ void handleCreationRequest(ConnectionContext* ctx, ClientboundCreationRequestPac
     ctx->write(status);
 
     global_tasks[packet->id] = new RepeatingTask();
-    global_tasks[packet->id]->start([i]() {
-        std::cout << "Hello world from " << i->id << std::endl;
+    global_tasks[packet->id]->start([=]() {
+        image_raw8_t frame = i->provide_frame();
+        std::vector<unsigned char> indices = match_image(frame.data, frame.width, frame.height, frame.channels);
+        std::vector<unsigned char> sliced = slice_indices(indices, frame.width, frame.height);
+        std::vector<unsigned char> deflated = compress_bytes(sliced);
+        ServerboundFramePacket* frame_packet = new ServerboundFramePacket();
+        frame_packet->id = i->id;
+        frame_packet->compressedData = deflated;
+        ctx->write(frame_packet, true);
     }, 1000, 4000);
 }
 

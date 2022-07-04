@@ -14,14 +14,14 @@ public:
         std::cout << "IO::destroy (" << id << ")" << std::endl;
     }
 
-    image_t provide_frame() override {
+    image_raw8_t provide_frame() override {
         std::cout << "IO::provide_frame" << std::endl;
         return buffer;
     }
 
     void set_frame(image_t frame) override {
         std::cout << "IO::set_frame {width=" << frame.width << ", height=" << frame.height << "}" << std::endl;
-        buffer = frame;
+        buffer = frame.as_c_image().as_raw_image().as_raw_image();
     }
     
     void handle_touch(int x, int y, bool type, bool admin) override {
@@ -29,7 +29,7 @@ public:
     }
 
 public:
-    image_t buffer;
+    image_raw8_t buffer;
 
 };
 

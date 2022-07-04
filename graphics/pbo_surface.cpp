@@ -20,7 +20,7 @@ void PBOSurface::render(IRenderer* renderer) {
     renderer->render();
 
     glBindBuffer(GL_PIXEL_PACK_BUFFER, pbo[dma]);
-    glReadPixels(0, 0, window->getWidth(), window->getHeight(), GL_BGRA, GL_UNSIGNED_BYTE, 0);
+    glReadPixels(0, 0, window->getWidth(), window->getHeight(), GL_RGBA, GL_UNSIGNED_BYTE, 0);
 
     glBindBuffer(GL_PIXEL_PACK_BUFFER, pbo[read]);
     buffer.raw8 = (unsigned char*)glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);

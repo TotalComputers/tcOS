@@ -13,7 +13,10 @@ include_directories(thirdparty/zlib)
 add_subdirectory(thirdparty/glad)
 include_directories(thirdparty/glad/include)
 
+add_subdirectory(thirdparty/glfw)
+include_directories(thirdparty/glfw/include)
+
 file(GLOB SRC *.cpp client/*.cpp client/protocol/*.cpp client/pipeline/*.cpp client/encryption/*.cpp client/graphics/*.cpp common/*.cpp)
 
 add_executable(tcOS ${SRC})
-target_link_libraries(tcOS uv crypto ssl zlib glad)
+target_link_libraries(tcOS uv crypto ssl zlib glad glfw)

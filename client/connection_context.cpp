@@ -6,8 +6,8 @@
 ConnectionContext::ConnectionContext(Pipeline* pipeline, uv_stream_t* stream)
     : pipeline(pipeline), stream(stream) {}
 
-void ConnectionContext::write(void* object) {
-    void* src = object;
+void ConnectionContext::write(const void* object) {
+    void* src = (void*)object;
     void* dst;
     pipeline->forEach([this, &src, &object, &dst](AbstractHandler* handler, int) {
         if(handler->isOutboundHandler()) {
@@ -33,6 +33,21 @@ void ConnectionContext::write(void* object) {
         }
         free(req);
     });
+}
+
+static ConnectionContext* _async_tmp_current_ctx;
+void ConnectionContext::write_async(const void* object) {
+    uv_async_t async;
+
+    _async_tmp_current_ctx = this;
+    _async_tmp = (void*)object;
+    uv_async_init(tcp_get_uv_loop(), &async, [](uv_async_t* handle) {
+        ConnectionContext* ctx = _async_tmp_current_ctx;
+        const void* object = ctx->_async_tmp;
+        ctx->write(object);
+    });
+
+    uv_async_send(&async);
 }
 
 void ConnectionContext::read(ByteBuffer& buf) {

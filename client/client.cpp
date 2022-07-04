@@ -63,3 +63,7 @@ void tcp_connect(const char* host, int port) {
     uv_tcp_connect(con, tcp, (const sockaddr*)&dst, on_connect);
     uv_run(loop, UV_RUN_DEFAULT);
 }
+
+uv_loop_t* tcp_get_uv_loop() {
+    return loop;
+}

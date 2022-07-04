@@ -25,9 +25,9 @@ public:
         std::cout << "IO::destroy (" << id << ")" << std::endl;
     }
 
-    image_raw8_t provide_frame() override {
+    image_t provide_frame() override {
         std::cout << "IO::provide_frame" << std::endl;
-        return buffer.as_c_image().as_raw_image().as_raw_image();
+        return buffer;
     }
 
     void set_frame(image_t frame) override {

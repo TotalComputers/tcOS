@@ -97,8 +97,8 @@ void handleCreationRequest(ConnectionContext* ctx, ClientboundCreationRequestPac
 
     global_tasks[packet->id] = new RepeatingTask();
     global_tasks[packet->id]->start([=]() {
-        image_raw8_t frame = i->provide_frame();
-        std::vector<unsigned char> indices = match_image(frame.data, frame.width, frame.height, frame.channels);
+        image_t frame = i->provide_frame();
+        std::vector<unsigned char> indices = match_image(frame.raw8, frame.width, frame.height, 4);
         std::vector<unsigned char> sliced = slice_indices(indices, frame.width, frame.height);
         std::vector<unsigned char> deflated = compress_bytes(sliced);
         ServerboundFramePacket* frame_packet = new ServerboundFramePacket();

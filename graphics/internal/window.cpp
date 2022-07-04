@@ -5,7 +5,7 @@
 bool glfwInitialized = false;
 
 GLWindow::GLWindow(int w, int h, std::string title)
-    : width(w), height(h), title(title) {}
+    : width(w), height(h), title(title), renderer(nullptr), surface(nullptr) {}
 
 bool GLWindow::create() {
     if(!glfwInitialized) {
@@ -56,6 +56,9 @@ bool GLWindow::shouldClose() {
 }
 
 void GLWindow::doLoopWork() {
+    makeCurrent();
+    if(surface && renderer)
+        surface->render(renderer);
     glfwPollEvents();
     glfwSwapBuffers(handle);
 }
@@ -63,4 +66,25 @@ void GLWindow::doLoopWork() {
 void GLWindow::clear(float r, float g, float b, float a) {
     glClearColor(r, g, b, a);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+void GLWindow::makeCurrent() {
+    glfwMakeContextCurrent(handle);
+    glViewport(0, 0, width, height);
+}
+
+void GLWindow::setSurface(ISurface* surface) {
+    this->surface = surface;
+}
+
+ISurface* GLWindow::getSurface() {
+    return surface;
+}
+
+void GLWindow::setRenderer(IRenderer* renderer) {
+    this->renderer = renderer;
+}
+
+IRenderer* GLWindow::getRenderer() {
+    return renderer;
 }

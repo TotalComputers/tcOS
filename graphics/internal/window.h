@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../surface.h"
 #include <GLFW/glfw3.h>
 #include <string>
 
@@ -14,11 +15,18 @@ public:
     std::string getTitle();
     bool shouldClose();
     void doLoopWork();
-    void clear(float, float, float, float);
+    static void clear(float, float, float, float);
+    void makeCurrent();
+    void setSurface(ISurface*);
+    ISurface* getSurface();
+    void setRenderer(IRenderer*);
+    IRenderer* getRenderer();
 
 private:
     GLFWwindow* handle;
     int width, height;
     std::string title;
+    ISurface* surface;
+    IRenderer* renderer;
 
 };

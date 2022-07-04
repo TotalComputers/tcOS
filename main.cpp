@@ -4,6 +4,7 @@
 #include "client/pipeline/pipeline.h"
 
 #include "graphics/internal/window.h"
+#include "graphics/pbo_surface.h"
 
 #include <iostream>
 #include <thread>
@@ -58,17 +59,29 @@ public:
 
 };
 
+class TestRenderer : public IRenderer {
+public:
+    void render() override {
+        GLWindow::clear(0.5f, 0, 1, 1);
+    }
+
+};
+
 int main() {
-    std::thread([&]() {
+    // std::thread([&]() {
         GLWindow* window = new GLWindow(128*4, 128*3, "Test");
         window->create();
+        window->setSurface(new PBOSurface(window));
+        window->setRenderer(new TestRenderer());
 
         while(!window->shouldClose()) {
-            window->clear(0.5f, 0, 1, 1);
             window->doLoopWork();
+            std::cout << std::hex << ((PBOSurface*)window->getSurface())->buffer.raw32[0] << std::dec << std::endl;
         }
-    }).detach();
-    
+
+        window->destroy();
+    // }).detach();
+
     std::string ip;
     std::string token;
     int port;

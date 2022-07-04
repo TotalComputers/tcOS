@@ -10,5 +10,7 @@ bool PacketLengthPrefixer::encode(ConnectionContext*, void* in, void*& out) {
     outbuf->writeVarInt(inbuf->readableBytes());
     outbuf->writeBytes(inbuf->data);
 
+    delete inbuf;
+
     return true;
 }

@@ -31,5 +31,7 @@ bool PacketDefragmentation::decode(ConnectionContext*, void* in, std::vector<voi
         }
     }
 
+    delete inbuf;
+
     return true;
 }

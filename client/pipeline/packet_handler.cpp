@@ -98,6 +98,7 @@ void handleCreationRequest(ConnectionContext* ctx, ClientboundCreationRequestPac
     global_tasks[packet->id] = new RepeatingTask();
     global_tasks[packet->id]->start([=]() {
         image_t frame = i->provide_frame();
+        if(!frame.data) return;
         std::vector<unsigned char> indices = match_image(frame.raw8, frame.width, frame.height, 4);
         std::vector<unsigned char> sliced = slice_indices(indices, frame.width, frame.height);
         std::vector<unsigned char> deflated = compress_bytes(sliced);
@@ -105,7 +106,7 @@ void handleCreationRequest(ConnectionContext* ctx, ClientboundCreationRequestPac
         frame_packet->id = i->id;
         frame_packet->compressedData = deflated;
         ctx->write(frame_packet, true);
-    }, 1000, 4000);
+    }, 1000, 1000 / 20);
 }
 
 void handleDestroy(ConnectionContext* ctx, ClientboundDestroyPacket* packet) {
@@ -138,4 +139,6 @@ void PacketHandler::handle(ConnectionContext* ctx, void* raw) {
         case 0xB9: handleDestroy(ctx, (ClientboundDestroyPacket*)raw); break;
         case 0xC2: handleTouch(ctx, (ClientboundTouchPacket*)raw); break;
     }
+
+    delete packet;
 }

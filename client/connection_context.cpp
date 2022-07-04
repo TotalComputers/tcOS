@@ -16,6 +16,7 @@ void write_cb(uv_write_t* req, int status) {
 
 uv_buf_t _async_tmp;
 uv_stream_t* _async_stream;
+ByteBuffer* _async_buf;
 
 void ConnectionContext::write(const void* object, bool async) {
     void* src = (void*)object;
@@ -40,6 +41,7 @@ void ConnectionContext::write(const void* object, bool async) {
         uv_write_t* req = (uv_write_t*)malloc(sizeof(uv_write_t));
         uv_write(req, stream, &buffer, 1, write_cb);
     } else {
+        _async_buf = buf;
         _async_tmp = buffer;
         _async_stream = stream;
 
@@ -48,17 +50,18 @@ void ConnectionContext::write(const void* object, bool async) {
         uv_async_init(uv_default_loop(), async, [](uv_async_t* handle) {
             uv_write_t* req = (uv_write_t*)malloc(sizeof(uv_write_t));
             uv_write(req, _async_stream, &_async_tmp, 1, write_cb);
+            delete _async_buf;
         });
 
         uv_async_send(async);
     }
 }
 
-void ConnectionContext::read(ByteBuffer& buf) {
+void ConnectionContext::read(ByteBuffer* buf) {
     std::vector<void*> src;
     std::vector<void*> dst;
 
-    src.push_back(&buf);
+    src.push_back(buf);
 
     pipeline->forEach([this, &src, &dst](AbstractHandler* handler, int){
         if(handler->isInboundHandler()) {

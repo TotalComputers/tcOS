@@ -18,5 +18,7 @@ bool PacketDecryptor::decode(ConnectionContext* ctx, void* in, std::vector<void*
 
     out.push_back(outbuf);
 
+    delete inbuf;
+
     return true;
 }

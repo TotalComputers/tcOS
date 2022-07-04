@@ -8,7 +8,7 @@ public:
     ConnectionContext(Pipeline*, uv_stream_t*);
 
     void write(const void*, bool async = false);
-    void read(ByteBuffer&);
+    void read(ByteBuffer*);
 
 public:
     Pipeline* pipeline;

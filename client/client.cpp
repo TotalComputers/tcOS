@@ -20,14 +20,15 @@ static void alloc_cb(uv_handle_t* handle, size_t size, uv_buf_t* buf) {
 static void on_read(uv_stream_t* tcp, ssize_t nread, const uv_buf_t* buf)
 {
     if(nread >= 0) {
-        ByteBuffer data((unsigned char*)buf->base, nread);
+        ByteBuffer* data = new ByteBuffer((unsigned char*)buf->base, nread);
         ctx->read(data);
     }
     else {
         uv_close((uv_handle_t*)tcp, on_close);
     }
 
-    free(buf->base);
+    if(buf->base)
+        free(buf->base);
 }
 
 static void on_connect(uv_connect_t* con, int status) {

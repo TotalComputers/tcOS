@@ -10,5 +10,7 @@ bool PacketEncryptor::encode(ConnectionContext* ctx, void* in, void*& out) {
 
     dstbuf->writeBytes(aes_encrypt(inbuf->readBytes(inbuf->readableBytes())));
 
+    delete inbuf;
+
     return true;
 }

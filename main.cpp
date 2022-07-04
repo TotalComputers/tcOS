@@ -23,6 +23,8 @@ public:
 
     void destroy() override {
         std::cout << "IO::destroy (" << id << ")" << std::endl;
+        free(buffer.data);
+        buffer.data = nullptr;
     }
 
     image_t provide_frame() override {

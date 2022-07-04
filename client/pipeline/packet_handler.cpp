@@ -92,8 +92,10 @@ void handleCreationRequest(ConnectionContext* ctx, ClientboundCreationRequestPac
 }
 
 void handleDestroy(ConnectionContext* ctx, ClientboundDestroyPacket* packet) {
-    IOStorage::request(packet->id)->destroy();
+    std::shared_ptr<IOInterface>& io = IOStorage::request(packet->id);
+    io->destroy();
     IOStorage::remove(packet->id);
+    io.reset();
 }
 
 void handleTouch(ConnectionContext* ctx, ClientboundTouchPacket* packet) {

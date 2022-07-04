@@ -1,6 +1,6 @@
 #include "io_storage.h"
 
-std::shared_ptr<IOInterface> IOStorage::request(short id) {
+std::shared_ptr<IOInterface>& IOStorage::request(short id) {
     return storage[id];
 }
 

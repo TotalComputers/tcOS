@@ -7,6 +7,17 @@
 GLWindow::GLWindow(int w, int h, std::string title)
     : width(w), height(h), title(title), renderer(nullptr), surface(nullptr) {}
 
+GLWindow::~GLWindow() {
+    if(surface) {
+        delete surface;
+        surface = nullptr;
+    }
+    if(renderer) {
+        delete renderer;
+        renderer = nullptr;
+    }
+}
+
 bool GLWindow::create() {
     glfwDefaultWindowHints();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);

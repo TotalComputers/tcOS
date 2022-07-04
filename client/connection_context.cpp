@@ -52,6 +52,7 @@ void ConnectionContext::write(void* object, bool async) {
             uv_write_t* req = (uv_write_t*)malloc(sizeof(uv_write_t));
             uv_write(req, _async_stream, &_async_tmp, 1, write_cb);
             delete _async_buf;
+            free(handle);
         });
 
         uv_async_send(async);

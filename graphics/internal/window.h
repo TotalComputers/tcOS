@@ -7,6 +7,7 @@
 class GLWindow {
 public:
     GLWindow(int, int, std::string = "");
+    ~GLWindow();
     bool create();
     void destroy();
     GLFWwindow* getHandle();

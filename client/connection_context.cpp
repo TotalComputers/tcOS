@@ -6,7 +6,18 @@
 ConnectionContext::ConnectionContext(Pipeline* pipeline, uv_stream_t* stream)
     : pipeline(pipeline), stream(stream) {}
 
-void ConnectionContext::write(const void* object) {
+void write_cb(uv_write_t* req, int status) {
+    if(status) {
+        std::cout << "Unable to write data: " << uv_strerror(status);
+        return;
+    }
+    free(req);
+}
+
+uv_buf_t _async_tmp;
+uv_stream_t* _async_stream;
+
+void ConnectionContext::write(const void* object, bool async) {
     void* src = (void*)object;
     void* dst;
     pipeline->forEach([this, &src, &object, &dst](AbstractHandler* handler, int) {
@@ -25,29 +36,22 @@ void ConnectionContext::write(const void* object) {
     buffer.base = (char*)buf->data.data();
     buffer.len = buf->data.size();
 
-    uv_write_t* req = (uv_write_t*)malloc(sizeof(uv_write_t));
-    uv_write(req, stream, &buffer, 1, [](uv_write_t* req, int status) {
-        if(status) {
-            std::cout << "Unable to write data: " << uv_strerror(status);
-            return;
-        }
-        free(req);
-    });
-}
+    if(!async) {
+        uv_write_t* req = (uv_write_t*)malloc(sizeof(uv_write_t));
+        uv_write(req, stream, &buffer, 1, write_cb);
+    } else {
+        _async_tmp = buffer;
+        _async_stream = stream;
 
-static ConnectionContext* _async_tmp_current_ctx;
-void ConnectionContext::write_async(const void* object) {
-    uv_async_t async;
+        uv_async_t* async = (uv_async_t*)malloc(sizeof(uv_async_t));
 
-    _async_tmp_current_ctx = this;
-    _async_tmp = (void*)object;
-    uv_async_init(tcp_get_uv_loop(), &async, [](uv_async_t* handle) {
-        ConnectionContext* ctx = _async_tmp_current_ctx;
-        const void* object = ctx->_async_tmp;
-        ctx->write(object);
-    });
+        uv_async_init(uv_default_loop(), async, [](uv_async_t* handle) {
+            uv_write_t* req = (uv_write_t*)malloc(sizeof(uv_write_t));
+            uv_write(req, _async_stream, &_async_tmp, 1, write_cb);
+        });
 
-    uv_async_send(&async);
+        uv_async_send(async);
+    }
 }
 
 void ConnectionContext::read(ByteBuffer& buf) {

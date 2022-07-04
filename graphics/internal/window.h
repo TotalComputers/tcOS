@@ -1,0 +1,24 @@
+#pragma once
+
+#include <GLFW/glfw3.h>
+#include <string>
+
+class GLWindow {
+public:
+    GLWindow(int, int, std::string = "");
+    bool create();
+    void destroy();
+    GLFWwindow* getHandle();
+    int getWidth();
+    int getHeight();
+    std::string getTitle();
+    bool shouldClose();
+    void doLoopWork();
+    void clear(float, float, float, float);
+
+private:
+    GLFWwindow* handle;
+    int width, height;
+    std::string title;
+
+};

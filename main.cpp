@@ -2,7 +2,11 @@
 #include "client/ByteBuffer.h"
 #include "client/client.h"
 #include "client/pipeline/pipeline.h"
+
+#include "graphics/internal/window.h"
+
 #include <iostream>
+#include <thread>
 
 class TestIO : public IOInterface {
 public:
@@ -55,6 +59,16 @@ public:
 };
 
 int main() {
+    std::thread([&]() {
+        GLWindow* window = new GLWindow(128*4, 128*3, "Test");
+        window->create();
+
+        while(!window->shouldClose()) {
+            window->clear(0.5f, 0, 1, 1);
+            window->doLoopWork();
+        }
+    }).detach();
+    
     std::string ip;
     std::string token;
     int port;
@@ -65,7 +79,7 @@ int main() {
     std::cin >> port;
     std::cout << "Enter token: ";
     std::cin >> token;
-
+    
     protocol_registerPackets();
 
     Pipeline* pipeline = new Pipeline();

@@ -27,19 +27,13 @@ void RepeatingTask::stop() {
     active = false;
 }
 
-DelayedTask::DelayedTask() : canceled(false) {}
+DelayedTask::DelayedTask() {}
 
 void DelayedTask::start(std::function<void(void)> fn, long long delay) {
-    canceled = false;
-    std::thread([this, fn, delay]() {
+    std::thread([fn, delay]() {
         std::this_thread::sleep_for(std::chrono::milliseconds(delay));
-        if(canceled) return;
         fn();
     }).detach();
-}
-
-void DelayedTask::cancel() {
-    canceled = true;
 }
 
 void MultiThreadRepeatingTask::start(std::function<void(void)> fn, long long delay, long long interval) {

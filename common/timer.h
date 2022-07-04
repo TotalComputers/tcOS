@@ -20,9 +20,6 @@ public:
     void start(std::function<void(void)>, long long);
     void cancel();
 
-private:
-    bool canceled;
-
 };
 
 class MultiThreadRepeatingTask : public RepeatingTask {

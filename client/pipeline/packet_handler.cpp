@@ -128,12 +128,15 @@ void handleCreationRequest(ConnectionContext* ctx, ClientboundCreationRequestPac
 
 void handleDestroy(ConnectionContext* ctx, ClientboundDestroyPacket* packet) {
     global_tasks[packet->id]->stop();
-    delete global_tasks[packet->id];
-    global_tasks.erase(packet->id);
-    std::shared_ptr<IOInterface>& io = IOStorage::request(packet->id);
-    io->destroy();
-    IOStorage::remove(packet->id);
-    io.reset();
+    short id = packet->id;
+
+    (new DelayedTask())->start([=]() {
+        std::shared_ptr<IOInterface>& io = IOStorage::request(id);
+        delete global_tasks[id];
+        global_tasks.erase(id);
+        io->destroy();
+        IOStorage::remove(id);
+    }, 2000);
 
     delete packet;
 }

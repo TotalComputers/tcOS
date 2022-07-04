@@ -1,20 +1,17 @@
 #include <glad/glad.h>
 #include "window.h"
+#include "../../common/thread_safety.h"
+#include "../../common/timer.h"
 #include <iostream>
-
-bool glfwInitialized = false;
 
 GLWindow::GLWindow(int w, int h, std::string title)
     : width(w), height(h), title(title), renderer(nullptr), surface(nullptr) {}
 
 bool GLWindow::create() {
-    if(!glfwInitialized) {
-        glfwInit();
-        glfwInitialized = true;
-    }
-
+    glfwDefaultWindowHints();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     handle = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
@@ -23,10 +20,7 @@ bool GLWindow::create() {
         return false;
     }
     glfwMakeContextCurrent(handle);
-    if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-        std::cout << "Unable to initialize glad" << std::endl;
-        return false;
-    }
+    gladLoadGL();
     glViewport(0, 0, width, height);
     return true;
 }

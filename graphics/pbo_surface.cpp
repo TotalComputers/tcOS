@@ -1,5 +1,6 @@
 #include <glad/glad.h>
 #include "pbo_surface.h"
+#include <cstring>
 
 PBOSurface::PBOSurface(GLWindow* window) 
     : window(window) {

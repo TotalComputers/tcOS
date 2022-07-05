@@ -100,6 +100,7 @@ public:
     GLWindow* createWindow(int w, int h, std::string t) override {
         GLWindow* window = new GLWindow(w, h, t);
         window->create();
+        window->headless();
         window->setSurface(new PBOSurface(window));
         window->setRenderer(new TestRenderer(window));
         return window;

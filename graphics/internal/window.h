@@ -8,6 +8,7 @@ class GLWindow {
 public:
     GLWindow(int, int, std::string = "");
     ~GLWindow();
+    void headless();
     bool create();
     void destroy();
     GLFWwindow* getHandle();
@@ -29,5 +30,6 @@ private:
     std::string title;
     ISurface* surface;
     IRenderer* renderer;
+    bool isHeadless;
 
 };

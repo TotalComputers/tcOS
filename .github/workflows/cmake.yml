@@ -50,3 +50,9 @@ jobs:
           name: tcOS-${{ matrix.os }}
           path: |
             build/tcOS*
+      - name: Upload shaders
+        uses: actions/upload-artifact@v2
+        with:
+          name: tcOS-${{ matrix.os }}
+          path: |
+            shaders

@@ -11,6 +11,7 @@
 #include "graphics/internal/glio.h"
 #include "graphics/pbo_surface.h"
 #include "graphics/multisampling.h"
+#include "graphics/utils.h"
 
 #include "common/thread_safety.h"
 
@@ -69,6 +70,8 @@ public:
 public:
     void render() override {
         msaa->beforeRender();
+
+        GLUtils::enableTransparency();
 
         GLWindow::clear(float(0xF5) / float(0xFF), float(0xDF) / float(0xFF), float(0x99) / float(0xFF), 1);
 

@@ -39,6 +39,8 @@ public:
         program->setVertexFile  ("shaders/shader.vert");
         program->setFragmentFile("shaders/shader.frag");
         program->create();
+
+        u_colorMul = program->uniformLocation("u_colorMul");
     }
 
     ~TestRenderer() {
@@ -52,6 +54,7 @@ public:
         GLWindow::clear(float(0xF5) / float(0xFF), float(0xDF) / float(0xFF), float(0x99) / float(0xFF), 1);
 
         program->bind();
+        Shader::uniformFloat(u_colorMul, (sin(glfwGetTime()) / 2.0f) + 0.5f);
         vao->bind();
         glDrawArrays(GL_TRIANGLES, 0, 3); // TODO: Move this in another file
     }
@@ -60,6 +63,8 @@ private:
     VAO* vao;
     VBO* vbo;
     Shader* program;
+
+    unsigned int u_colorMul;
 
 };
 

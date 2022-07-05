@@ -2,6 +2,8 @@
 
 out vec4 _color;
 
+uniform float u_colorMul;
+
 void main() {
-    _color = vec4(0.29f, 0.52f, 0.45f, 1.00f);
+    _color = vec4(vec3(0.29f, 0.52f, 0.45f) * u_colorMul, 1.00f);
 }

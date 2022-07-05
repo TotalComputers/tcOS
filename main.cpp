@@ -10,6 +10,7 @@
 #include "graphics/internal/shader.h"
 #include "graphics/internal/glio.h"
 #include "graphics/pbo_surface.h"
+#include "graphics/multisampling.h"
 
 #include "common/thread_safety.h"
 
@@ -18,16 +19,15 @@
 
 class TestRenderer : public IRenderer {
 public:
-    TestRenderer() {
+    TestRenderer(GLWindow* window) {
         float vertices[] = {
-            -0.5f, -0.5f, 0.0f,
-             0.5f, -0.5f, 0.0f,
-             0.0f,  0.5f, 0.0f,
+            -0.5f, -0.5f,  0.0f,
+             0.5f, -0.5f,  0.0f,
+             0.0f,  0.5f,  0.0f,
         };
 
         vao = new VAO();
         vbo = new VBO();
-        program = new Shader();
 
         vao->bind();
         vbo->setData((void*)vertices, sizeof(vertices));
@@ -36,33 +36,57 @@ public:
         VBO::unbind();
         VAO::unbind();
 
+        program = new Shader();
         program->setVertexFile  ("shaders/shader.vert");
         program->setFragmentFile("shaders/shader.frag");
         program->create();
 
+        screenShader = new Shader();
+        screenShader->setVertexFile  ("shaders/screenShader.vert");
+        screenShader->setFragmentFile("shaders/screenShader.frag");
+        screenShader->create();
+
+        program->bind();
         u_colorMul = program->uniformLocation("u_colorMul");
+
+        screenShader->bind();
+        screenShader->uniformInt("u_screen", 0);
+
+        Shader::unbind();
+
+        msaa = new Multisampling(window, 4);
+        msaa->createScreenVAO();
     }
 
     ~TestRenderer() {
         delete vao;
         delete vbo;
         delete program;
+        delete screenShader;
+        delete msaa;
     }
 
 public:
     void render() override {
+        msaa->beforeRender();
+
         GLWindow::clear(float(0xF5) / float(0xFF), float(0xDF) / float(0xFF), float(0x99) / float(0xFF), 1);
 
         program->bind();
         Shader::uniformFloat(u_colorMul, (sin(glfwGetTime()) / 2.0f) + 0.5f);
         vao->bind();
         glDrawArrays(GL_TRIANGLES, 0, 3); // TODO: Move this in another file
+
+        msaa->afterRender();
+        msaa->render(screenShader);
     }
 
 private:
     VAO* vao;
     VBO* vbo;
     Shader* program;
+    Shader* screenShader;
+    Multisampling* msaa;
 
     unsigned int u_colorMul;
 
@@ -74,7 +98,7 @@ public:
         GLWindow* window = new GLWindow(w, h, t);
         window->create();
         window->setSurface(new PBOSurface(window));
-        window->setRenderer(new TestRenderer());
+        window->setRenderer(new TestRenderer(window));
         return window;
     }
 

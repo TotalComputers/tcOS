@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cstdint>
-
 class VBO {
 public:
     VBO();
@@ -10,7 +8,7 @@ public:
 public:
     unsigned int getHandle();
     void bind();
-    void setData(void*, size_t);
+    void setData(void*, unsigned long long);
     static void unbind();
 
 private:

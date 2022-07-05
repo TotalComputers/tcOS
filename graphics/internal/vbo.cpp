@@ -17,7 +17,7 @@ void VBO::bind() {
     glBindBuffer(GL_ARRAY_BUFFER, handle);
 }
 
-void VBO::setData(void* data, size_t size) {
+void VBO::setData(void* data, unsigned long long size) {
     bind();
     glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
 }

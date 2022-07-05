@@ -10,7 +10,7 @@ public:
 public:
     unsigned int getHandle();
     void bind();
-    void attribPointer3f(unsigned, unsigned, unsigned long);
+    void attribPointer3f(unsigned, unsigned, long long);
     static void unbind();
 
 private:

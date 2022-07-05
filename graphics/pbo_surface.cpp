@@ -23,7 +23,12 @@ void PBOSurface::render(IRenderer* renderer) {
     glReadPixels(0, 0, window->getWidth(), window->getHeight(), GL_RGBA, GL_UNSIGNED_BYTE, 0);
 
     glBindBuffer(GL_PIXEL_PACK_BUFFER, pbo[read]);
-    buffer.raw8 = (unsigned char*)glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
+    unsigned char* data = (unsigned char*)glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
+    unsigned scanline = 4 * window->getWidth();
+
+    for(int y = 0; y < window->getHeight(); y++) {
+        memcpy(buffer.raw8 + y * scanline, data + (window->getHeight() - 1 - y) * scanline, scanline);
+    }
 
     glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
     glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);

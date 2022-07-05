@@ -1,8 +1,13 @@
+#include <glad/glad.h>
+
 #include "client/protocol/protocol.h"
 #include "client/ByteBuffer.h"
 #include "client/client.h"
 #include "client/pipeline/pipeline.h"
 
+#include "graphics/internal/vao.h"
+#include "graphics/internal/vbo.h"
+#include "graphics/internal/shader.h"
 #include "graphics/internal/glio.h"
 #include "graphics/pbo_surface.h"
 
@@ -13,9 +18,48 @@
 
 class TestRenderer : public IRenderer {
 public:
-    void render() override {
-        GLWindow::clear(0.5f, 0, 1, 1);
+    TestRenderer() {
+        float vertices[] = {
+            -0.5f, -0.5f, 0.0f,
+             0.5f, -0.5f, 0.0f,
+             0.0f,  0.5f, 0.0f,
+        };
+
+        vao = new VAO();
+        vbo = new VBO();
+        program = new Shader();
+
+        vao->bind();
+        vbo->setData((void*)vertices, sizeof(vertices));
+        vao->attribPointer3f(0, 3, 0);
+
+        VBO::unbind();
+        VAO::unbind();
+
+        program->setVertexFile  ("shaders/shader.vert");
+        program->setFragmentFile("shaders/shader.frag");
+        program->create();
     }
+
+    ~TestRenderer() {
+        delete vao;
+        delete vbo;
+        delete program;
+    }
+
+public:
+    void render() override {
+        GLWindow::clear(float(0xF5) / float(0xFF), float(0xDF) / float(0xFF), float(0x99) / float(0xFF), 1);
+
+        program->bind();
+        vao->bind();
+        glDrawArrays(GL_TRIANGLES, 0, 3); // TODO: Move this in another file
+    }
+
+private:
+    VAO* vao;
+    VBO* vbo;
+    Shader* program;
 
 };
 

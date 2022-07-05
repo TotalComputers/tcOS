@@ -16,6 +16,9 @@ include_directories(thirdparty/glad/include)
 add_subdirectory(thirdparty/glfw)
 include_directories(thirdparty/glfw/include)
 
+add_subdirectory(thirdparty/glm)
+include_directories(thirdparty/glm)
+
 file(GLOB SRC *.cpp client/*.cpp client/protocol/*.cpp client/pipeline/*.cpp client/encryption/*.cpp client/graphics/*.cpp common/*.cpp graphics/*.cpp graphics/internal/*.cpp)
 
 add_executable(tcOS ${SRC})

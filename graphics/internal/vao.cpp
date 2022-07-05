@@ -17,7 +17,7 @@ void VAO::bind() {
     glBindVertexArray(handle);
 }
 
-void VAO::attribPointer3f(unsigned id, unsigned stride, unsigned offset) {
+void VAO::attribPointer3f(unsigned id, unsigned stride, unsigned long offset) {
     glVertexAttribPointer(id, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)offset);
     glEnableVertexAttribArray(id);
 }

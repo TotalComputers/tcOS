@@ -72,8 +72,8 @@ public:
 
 public:
     void render() override {
-        element->setX(100.f + (std::sinf((float)glfwGetTime()) + 1.f) * 70);
-        element2->setY(20.f + (std::sinf((float)glfwGetTime()) + 1.f) * 5);
+        element->setX(100.f + (float)(std::sin(glfwGetTime()) + 1.f) * 70);
+        element2->setY(20.f + (float)(std::sin(glfwGetTime()) + 1.f) * 5);
 
         msaa->beforeRender();
 

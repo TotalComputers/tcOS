@@ -4,8 +4,6 @@
 #include "../internal/vbo.h"
 #include "../internal/window.h"
 #include "std_shaders.h"
-#include <iostream>
-#include <cmath>
 
 CursorElement::CursorElement(PositionedElement* parent, Shader* cursorShader)
         : CachedElement(0, 0, 30, 30, 4), cursorShader(cursorShader) {
@@ -16,7 +14,6 @@ CursorElement::CursorElement(PositionedElement* parent, Shader* cursorShader)
 }
 
 void CursorElement::thisChanged() {
-    std::cout << "this changed" << std::endl;
     CachedElement::thisChanged();
     lastActive = glfwGetTime();
     opacity = 1;

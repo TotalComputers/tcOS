@@ -3,6 +3,7 @@
 #include "../../common/thread_safety.h"
 #include "../../common/timer.h"
 #include <iostream>
+#include <algorithm>
 
 GLWindow::GLWindow(int w, int h, std::string title)
     : width(w), height(h), title(title), renderer(nullptr), surface(nullptr), isHeadless(false) {

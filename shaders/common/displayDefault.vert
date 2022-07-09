@@ -9,5 +9,5 @@ out vec2 _pass_texCoords;
 
 void main() {
     _pass_texCoords = _in_texCoords;
-    gl_Position = u_mat * vec4(_in_pos, -1.0, 1.0);
+    gl_Position = u_mat * vec4(_in_pos, 0.0, 1.0);
 }

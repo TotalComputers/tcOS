@@ -24,7 +24,10 @@ public:
 
     void render(int layer) override {
         std::cout << "Rendering layer: " << layer << std::endl;
-        GLWindow::clear(r, g, b, a);
+        switch(layer) {
+            case 0: GLWindow::clear(    r,     g,     b, a); break;
+            case 1: GLWindow::clear(1.f-r, 1.f-g, 1.f-b, a); break;
+        }
     }
 
 public:
@@ -36,7 +39,7 @@ class TestRenderer : public IRenderer {
 public:
     TestRenderer(GLWindow* window) {
         element = new TestElement(100.f, 100.f, 100.f, 100.f);
-        element->setDisplayShader(CommonShaders::defaultDisplayShader(), CommonShaders::u_defaultDisplayMatrix);
+        element->setDisplayShader(CommonShaders::DefaultDisplay::Get(), CommonShaders::DefaultDisplay::uMatrix());
         element->setParent(window->getElement());
         element->cache(1);
         element->bindLayer(0, 0);
@@ -44,10 +47,11 @@ public:
         element2 = new TestElement(20.f, 20.f, 20.f, 20.f);
         element2->r = 0.f;
         element2->g = 1.f;
-        element2->setDisplayShader(CommonShaders::defaultDisplayShader(), CommonShaders::u_defaultDisplayMatrix);
+        element2->setDisplayShader(CommonShaders::BlendDisplay::Get(), CommonShaders::BlendDisplay::uMatrix());
         element2->setParent(element);
-        element2->cache(1);
+        element2->cache(2);
         element2->bindLayer(0, 0);
+        element2->bindLayer(1, 1);
 
         screenShader = new Shader();
         screenShader->setVertexFile  ("shaders/screenShader.vert");
@@ -81,6 +85,8 @@ public:
         GLWindow::clear(float(0xF5) / float(0xFF), float(0xDF) / float(0xFF), float(0x99) / float(0xFF), 1);
 
         element->display();
+        element2->getDisplayShader()->bind();
+        Shader::uniformFloat(CommonShaders::BlendDisplay::uBlendFactorLoc(), ((float)std::cos(glfwGetTime()) + 0.5f) / 2.f);
         element2->display();
 
         msaa->afterRender();

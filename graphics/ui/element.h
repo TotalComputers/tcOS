@@ -70,7 +70,7 @@ public:
     Shader* getDisplayShader();
     void cache(int);
     void recache(int);
-    void display() override;
+    virtual void display() override;
     void bindLayer(int, int);
     int getSamples();
     void setSamples(unsigned char);

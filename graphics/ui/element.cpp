@@ -2,6 +2,7 @@
 #include "element.h"
 #include <iostream>
 #include <glm/ext.hpp>
+#include <algorithm>
 
 PositionedElement::PositionedElement(float x, float y, float w, float h)
     : x(x), y(y), w(w), h(h) {
@@ -249,7 +250,7 @@ void CachedElement::display() {
 }
 
 void CachedElement::recache(int layers) {
-    auto& it = deletable.begin();
+    auto it = deletable.begin();
     while(it != deletable.end()) {
         it->second(1, &it->first);
         it++;

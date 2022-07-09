@@ -6,7 +6,11 @@
 #include <vector>
 #include <map>
 
+#if defined(_WIN32) && !defined(__CYGWIN__) && !defined(__SCITECH_SNAP__)
 typedef void(__stdcall* glDeleteFn)(int, const unsigned int*); 
+#else
+typedef void(*glDeleteFn)(int, const unsigned int*);
+#endif
 
 class PositionedElement {
 public:

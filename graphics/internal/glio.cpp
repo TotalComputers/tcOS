@@ -25,9 +25,8 @@ void GLIO::set_frame(image_t frame)  {
 void GLIO::destroy() {
     gl_mutex.lock();
     run_in_main_thread([&]() {
-        gl->destroy();
+        delete gl;
     });
-    delete gl;
     gl = nullptr;
     gl_mutex.unlock();
 }

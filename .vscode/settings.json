@@ -71,6 +71,7 @@
         "xlocmon": "cpp",
         "xloctime": "cpp",
         "fstream": "cpp",
-        "mutex": "cpp"
+        "mutex": "cpp",
+        "cstdarg": "cpp"
     }
 }

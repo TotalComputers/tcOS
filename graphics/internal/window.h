@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../ui/element.h"
 #include "../surface.h"
 #include <GLFW/glfw3.h>
 #include <string>
@@ -22,6 +23,7 @@ public:
     void setSurface(ISurface*);
     ISurface* getSurface();
     void setRenderer(IRenderer*);
+    PositionedElement* getElement();
     IRenderer* getRenderer();
 
 private:
@@ -30,6 +32,7 @@ private:
     std::string title;
     ISurface* surface;
     IRenderer* renderer;
+    PositionedElement* element;
     bool isHeadless;
 
 };

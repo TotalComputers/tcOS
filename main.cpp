@@ -1,5 +1,3 @@
-#include <glad/glad.h>
-
 #include "client/protocol/protocol.h"
 #include "client/ByteBuffer.h"
 #include "client/client.h"
@@ -9,6 +7,7 @@
 #include "graphics/internal/vbo.h"
 #include "graphics/internal/shader.h"
 #include "graphics/internal/glio.h"
+#include "graphics/ui/std_shaders.h"
 #include "graphics/pbo_surface.h"
 #include "graphics/multisampling.h"
 #include "graphics/utils.h"
@@ -18,37 +17,42 @@
 #include <iostream>
 #include <thread>
 
+class TestElement : public CachedElement {
+public:
+    TestElement(float x, float y, float w, float h)
+        : CachedElement(x, y, w, h) {}
+
+    void render(int layer) override {
+        std::cout << "Rendering layer: " << layer << std::endl;
+        GLWindow::clear(r, g, b, a);
+    }
+
+public:
+    float r = 1, g = 0, b = 0, a = 1;
+
+};
+
 class TestRenderer : public IRenderer {
 public:
     TestRenderer(GLWindow* window) {
-        float vertices[] = {
-            -0.5f, -0.5f,  0.0f,
-             0.5f, -0.5f,  0.0f,
-             0.0f,  0.5f,  0.0f,
-        };
+        element = new TestElement(100.f, 100.f, 100.f, 100.f);
+        element->setDisplayShader(CommonShaders::defaultDisplayShader(), CommonShaders::u_defaultDisplayMatrix);
+        element->setParent(window->getElement());
+        element->cache(1);
+        element->bindLayer(0, 0);
 
-        vao = new VAO();
-        vbo = new VBO();
-
-        vao->bind();
-        vbo->setData((void*)vertices, sizeof(vertices));
-        vao->attribPointer3f(0, 3, 0);
-
-        VBO::unbind();
-        VAO::unbind();
-
-        program = new Shader();
-        program->setVertexFile  ("shaders/shader.vert");
-        program->setFragmentFile("shaders/shader.frag");
-        program->create();
+        element2 = new TestElement(20.f, 20.f, 20.f, 20.f);
+        element2->r = 0.f;
+        element2->g = 1.f;
+        element2->setDisplayShader(CommonShaders::defaultDisplayShader(), CommonShaders::u_defaultDisplayMatrix);
+        element2->setParent(element);
+        element2->cache(1);
+        element2->bindLayer(0, 0);
 
         screenShader = new Shader();
         screenShader->setVertexFile  ("shaders/screenShader.vert");
         screenShader->setFragmentFile("shaders/screenShader.frag");
         screenShader->create();
-
-        program->bind();
-        u_colorMul = program->uniformLocation("u_colorMul");
 
         screenShader->bind();
         screenShader->uniformInt("u_screen", 0);
@@ -60,38 +64,33 @@ public:
     }
 
     ~TestRenderer() {
-        delete vao;
-        delete vbo;
-        delete program;
+        delete element;
+        delete element2;
         delete screenShader;
         delete msaa;
     }
 
 public:
     void render() override {
+        element->setX(100.f + (std::sinf((float)glfwGetTime()) + 1.f) * 70);
+        element2->setY(20.f + (std::sinf((float)glfwGetTime()) + 1.f) * 5);
+
         msaa->beforeRender();
 
         GLUtils::enableTransparency();
-
         GLWindow::clear(float(0xF5) / float(0xFF), float(0xDF) / float(0xFF), float(0x99) / float(0xFF), 1);
 
-        program->bind();
-        Shader::uniformFloat(u_colorMul, (sin(glfwGetTime()) / 2.0f) + 0.5f);
-        vao->bind();
-        glDrawArrays(GL_TRIANGLES, 0, 3); // TODO: Move this in another file
+        element->display();
+        element2->display();
 
         msaa->afterRender();
         msaa->render(screenShader);
     }
 
 private:
-    VAO* vao;
-    VBO* vbo;
-    Shader* program;
+    TestElement* element, *element2;
     Shader* screenShader;
     Multisampling* msaa;
-
-    unsigned int u_colorMul;
 
 };
 
@@ -100,7 +99,7 @@ public:
     GLWindow* createWindow(int w, int h, std::string t) override {
         GLWindow* window = new GLWindow(w, h, t);
         window->create();
-        window->headless();
+        // window->headless();
         window->setSurface(new PBOSurface(window));
         window->setRenderer(new TestRenderer(window));
         return window;

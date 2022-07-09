@@ -5,9 +5,12 @@
 #include <iostream>
 
 GLWindow::GLWindow(int w, int h, std::string title)
-    : width(w), height(h), title(title), renderer(nullptr), surface(nullptr) {}
+    : width(w), height(h), title(title), renderer(nullptr), surface(nullptr), isHeadless(false) {
+    element = new PositionedElement(0.f, 0.f, (float)w, (float)h);
+}
 
 GLWindow::~GLWindow() {
+    destroy();
     if(surface) {
         delete surface;
         surface = nullptr;
@@ -93,6 +96,10 @@ void GLWindow::setRenderer(IRenderer* renderer) {
 
 IRenderer* GLWindow::getRenderer() {
     return renderer;
+}
+
+PositionedElement* GLWindow::getElement() {
+    return element;
 }
 
 void GLWindow::headless() {

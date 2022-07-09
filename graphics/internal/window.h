@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../ui/element.h"
+#include "../../input/input_handler.h"
 #include "../surface.h"
 #include <GLFW/glfw3.h>
 #include <string>
@@ -25,6 +26,10 @@ public:
     void setRenderer(IRenderer*);
     PositionedElement* getElement();
     IRenderer* getRenderer();
+    void addInputHandler(IInputHandler*);
+    void removeInputHandler(IInputHandler*);
+    void removeInputHandler(int);
+    std::vector<IInputHandler*> getInputHandlers();
 
 private:
     GLFWwindow* handle;
@@ -34,5 +39,6 @@ private:
     IRenderer* renderer;
     PositionedElement* element;
     bool isHeadless;
+    std::vector<IInputHandler*> inputHandlers;
 
 };

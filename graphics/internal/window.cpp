@@ -107,3 +107,19 @@ void GLWindow::headless() {
     if(handle)
         glfwHideWindow(handle);
 }
+
+void GLWindow::addInputHandler(IInputHandler* handler) {
+    inputHandlers.push_back(handler);
+}
+
+void GLWindow::removeInputHandler(IInputHandler* handler) {
+    inputHandlers.erase(std::find(inputHandlers.begin(), inputHandlers.end(), handler));
+}
+
+void GLWindow::removeInputHandler(int idx) {
+    removeInputHandler(inputHandlers[idx]);
+}
+
+std::vector<IInputHandler*> GLWindow::getInputHandlers() {
+    return inputHandlers;
+}

@@ -1,3 +1,5 @@
+#include <glad/glad.h>
+
 #include "client/protocol/protocol.h"
 #include "client/ByteBuffer.h"
 #include "client/client.h"
@@ -8,6 +10,7 @@
 #include "graphics/internal/shader.h"
 #include "graphics/internal/glio.h"
 #include "graphics/ui/std_shaders.h"
+#include "graphics/ui/cursor.h"
 #include "graphics/pbo_surface.h"
 #include "graphics/multisampling.h"
 #include "graphics/utils.h"
@@ -17,41 +20,15 @@
 #include <iostream>
 #include <thread>
 
-class TestElement : public CachedElement {
-public:
-    TestElement(float x, float y, float w, float h)
-        : CachedElement(x, y, w, h) {}
-
-    void render(int layer) override {
-        std::cout << "Rendering layer: " << layer << std::endl;
-        switch(layer) {
-            case 0: GLWindow::clear(    r,     g,     b, a); break;
-            case 1: GLWindow::clear(1.f-r, 1.f-g, 1.f-b, a); break;
-        }
-    }
-
-public:
-    float r = 1, g = 0, b = 0, a = 1;
-
-};
-
 class TestRenderer : public IRenderer {
 public:
     TestRenderer(GLWindow* window) {
-        element = new TestElement(100.f, 100.f, 100.f, 100.f);
-        element->setDisplayShader(CommonShaders::DefaultDisplay::Get(), CommonShaders::DefaultDisplay::uMatrix());
-        element->setParent(window->getElement());
-        element->cache(1);
-        element->bindLayer(0, 0);
-
-        element2 = new TestElement(20.f, 20.f, 20.f, 20.f);
-        element2->r = 0.f;
-        element2->g = 1.f;
-        element2->setDisplayShader(CommonShaders::BlendDisplay::Get(), CommonShaders::BlendDisplay::uMatrix());
-        element2->setParent(element);
-        element2->cache(2);
-        element2->bindLayer(0, 0);
-        element2->bindLayer(1, 1);
+        cursorShader = new Shader();
+        cursorShader->setVertexFile("shaders/cursor.vert");
+        cursorShader->setFragmentFile("shaders/cursor.frag");
+        cursorShader->create();
+        cursor = new CursorElement(window->getElement(), cursorShader);
+        window->addInputHandler(cursor);
 
         screenShader = new Shader();
         screenShader->setVertexFile  ("shaders/screenShader.vert");
@@ -68,34 +45,28 @@ public:
     }
 
     ~TestRenderer() {
-        delete element;
-        delete element2;
+        delete cursor;
+        delete cursorShader;
         delete screenShader;
         delete msaa;
     }
 
 public:
     void render() override {
-        element->setX(100.f + (float)(std::sin(glfwGetTime()) + 1.f) * 70);
-        element2->setY(20.f + (float)(std::sin(glfwGetTime()) + 1.f) * 5);
-
         msaa->beforeRender();
 
         GLUtils::enableTransparency();
         GLWindow::clear(float(0xF5) / float(0xFF), float(0xDF) / float(0xFF), float(0x99) / float(0xFF), 1);
 
-        element->display();
-        element2->getDisplayShader()->bind();
-        Shader::uniformFloat(CommonShaders::BlendDisplay::uBlendFactorLoc(), ((float)std::cos(glfwGetTime()) + 0.5f) / 2.f);
-        element2->display();
+        cursor->display();
 
         msaa->afterRender();
         msaa->render(screenShader);
     }
 
 private:
-    TestElement* element, *element2;
-    Shader* screenShader;
+    CursorElement* cursor;
+    Shader* screenShader, *cursorShader;
     Multisampling* msaa;
 
 };

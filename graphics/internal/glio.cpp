@@ -2,6 +2,7 @@
 #include "../../common/thread_safety.h"
 #include <iostream>
 #include <mutex>
+#include <algorithm>
 
 std::mutex gl_mutex;
 
@@ -14,6 +15,7 @@ void GLIO::init() {
         gl = factory->createWindow(reference_buf.width, reference_buf.height, name);
     });
     gl_mutex.unlock();
+    inputHandlers = gl->getInputHandlers();
     free(reference_buf.data);
     reference_buf.data = 0;
 }
@@ -41,8 +43,22 @@ image_t& GLIO::provide_frame() {
     return ((PBOSurface*)gl->getSurface())->buffer;
 }
 
-void GLIO::handle_touch(int, int, bool, bool) {
-    std::cout << "stub" << std::endl;
+void GLIO::handle_touch(int x, int y, bool is_right, bool admin) {
+    for(IInputHandler* handler : inputHandlers) {
+        handler->handleTouch(x, y, is_right, admin);
+    }
+}
+
+void GLIO::addInputHandler(IInputHandler* handler) {
+    inputHandlers.push_back(handler);
+}
+
+void GLIO::removeInputHandler(IInputHandler* handler) {
+    inputHandlers.erase(std::find(inputHandlers.begin(), inputHandlers.end(), handler));
+}
+
+void GLIO::removeInputHandler(int idx) {
+    removeInputHandler(inputHandlers[idx]);
 }
 
 

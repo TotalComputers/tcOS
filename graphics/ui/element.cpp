@@ -261,7 +261,8 @@ void CachedElement::recache(int layers) {
 }
 
 void CachedElement::bindLayer(int id, int tex) {
-    binding.resize(std::max((int)binding.size(), id + 1));
+    if(id + 1 > binding.size())
+        binding.resize(id + 1);
     binding[id] = tex + 1;
 }
 

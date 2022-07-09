@@ -9,8 +9,10 @@ CursorElement::CursorElement(PositionedElement* parent, Shader* cursorShader)
         : CachedElement(0, 0, 30, 30, 4), cursorShader(cursorShader) {
     setDisplayShader(CommonShaders::BlendDisplay::Get(), CommonShaders::BlendDisplay::uMatrix());
     setParent(parent);
-    cache(2);
-    bindLayer(1, 1);
+    cache(3);
+    bindLayer(0, -1);
+    bindLayer(1, -1);
+    bindLayer(2, -1);
 }
 
 void CursorElement::thisChanged() {
@@ -31,7 +33,7 @@ void CursorElement::render(int layer) {
 
     double twoPi = 2 * 3.14159265358979323846;
     double inc = twoPi / numSides;
-    float radius = (float)layer / 2.f;
+    float radius = (float)layer / (1.f + layer);
     int i = 0;
 
     for(double angle = 0.f; angle <= twoPi; angle += inc) {
@@ -58,17 +60,31 @@ void CursorElement::render(int layer) {
 void CursorElement::display() {
     if(opacity <= 0) return;
     double diff = glfwGetTime() - lastActive;
-    if(diff > 3) {
-        bindLayer(0, 0);
-        opacity -= (float)((diff*diff) / 45);
-    }
     CommonShaders::BlendDisplay::Get()->bind();
-    Shader::uniformFloat(CommonShaders::BlendDisplay::uBlendFactorLoc(), opacity);
+    if(diff > 3) {
+        bindLayer(1, 1);
+        bindLayer(0, 0);
+        bindLayer(2, -1);
+        opacity -= (float)((diff*diff) / 45);
+        Shader::uniformFloat(CommonShaders::BlendDisplay::uBlendFactorLoc(), opacity);
+    } else {
+        diff = glfwGetTime() - lastClicked;
+        if(state > 0) {
+            state -= (float)(diff * 10);
+            if(state < 0) state = 0;
+        }
+        bindLayer(0, -1);
+        bindLayer(1, 0);
+        bindLayer(2, 1);
+        Shader::uniformFloat(CommonShaders::BlendDisplay::uBlendFactorLoc(), state);
+    }
     CachedElement::display();
 }
 
 void CursorElement::handleTouch(int x, int y, bool, bool) {
     set(x - getWidth() / 2, y - getHeight() / 2, getWidth(), getHeight());
+    lastClicked = glfwGetTime();
+    state = 1;
 }
 
 void CursorElement::handleMove(int x, int y) {

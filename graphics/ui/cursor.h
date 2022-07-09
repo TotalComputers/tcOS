@@ -17,6 +17,8 @@ public:
 private:
     Shader* cursorShader;
     double lastActive = 0;
+    double lastClicked = 0;
     float opacity = 1;
+    float state = 0;
 
 };

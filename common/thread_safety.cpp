@@ -2,13 +2,13 @@
 #include <list>
 #include <mutex>
 
-std::list<std::function<void(void)>> tasks;
-std::mutex mutex;
+static std::list<std::function<void(void)>> tasks;
+static std::mutex mutex;
 
 void run_in_main_thread(std::function<void(void)> fn) {
     bool done = false;
     mutex.lock();
-    tasks.push_back([&]() {
+    tasks.emplace_back([&]() {
         fn();
         done = true;
     });
@@ -16,12 +16,12 @@ void run_in_main_thread(std::function<void(void)> fn) {
     while(!done);
 }
 
-void run_loop() {
-    while(1) {
-        if(tasks.size() > 0) {
+[[noreturn]] void run_loop() {
+    while (true) {
+        if (!tasks.empty()) {
             mutex.lock();
             std::list<std::function<void(void)>> copy = tasks;
-            for(auto& fn : copy) {
+            for (auto& fn : copy) {
                 fn();
                 tasks.pop_front();
             }

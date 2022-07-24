@@ -1,6 +1,6 @@
 #include "protocol.h"
 
-ClientboundConnectionSuccessPacket::ClientboundConnectionSuccessPacket() {}
+ClientboundConnectionSuccessPacket::ClientboundConnectionSuccessPacket() = default;
 
 void ClientboundConnectionSuccessPacket::read(ByteBuffer& src) {
     name = src.readString();

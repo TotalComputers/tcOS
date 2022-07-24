@@ -12,7 +12,7 @@ public:
 public:
     void read(ByteBuffer&) override;
     ClientboundPacket* createInstance() override;
-    unsigned char getPacketID() const override;
+    [[nodiscard]] unsigned char getPacketID() const override;
 
 public:
     std::string name;
@@ -26,12 +26,12 @@ public:
 public:
     void read(ByteBuffer&) override;
     ClientboundPacket* createInstance() override;
-    unsigned char getPacketID() const override;
+    [[nodiscard]] unsigned char getPacketID() const override;
 
 public:
-    short width;
-    short height;
-    short id;
+    short width = 0;
+    short height = 0;
+    short id = 0;
     std::string name;
 
 };
@@ -43,10 +43,10 @@ public:
 public:
     void read(ByteBuffer&) override;
     ClientboundPacket* createInstance() override;
-    unsigned char getPacketID() const override;
+    [[nodiscard]] unsigned char getPacketID() const override;
 
 public:
-    short id;
+    short id = 0;
 
 };
 
@@ -57,7 +57,7 @@ public:
 public:
     void read(ByteBuffer&) override;
     ClientboundPacket* createInstance() override;
-    unsigned char getPacketID() const override;
+    [[nodiscard]] unsigned char getPacketID() const override;
 
 public:
     std::string reason;
@@ -71,7 +71,7 @@ public:
 public:
     void read(ByteBuffer&) override;
     ClientboundPacket* createInstance() override;
-    unsigned char getPacketID() const override;
+    [[nodiscard]] unsigned char getPacketID() const override;
 
 public:
     std::vector<unsigned char> publicKey;
@@ -85,7 +85,7 @@ public:
 public:
     void read(ByteBuffer&) override;
     ClientboundPacket* createInstance() override;
-    unsigned char getPacketID() const override;
+    [[nodiscard]] unsigned char getPacketID() const override;
 
 public:
     std::string serverName;
@@ -99,7 +99,7 @@ public:
 public:
     void read(ByteBuffer&) override;
     ClientboundPacket* createInstance() override;
-    unsigned char getPacketID() const override;
+    [[nodiscard]] unsigned char getPacketID() const override;
 
 public:
     std::vector<int> palette;
@@ -113,10 +113,10 @@ public:
 public:
     void read(ByteBuffer&) override;
     ClientboundPacket* createInstance() override;
-    unsigned char getPacketID() const override;
+    [[nodiscard]] unsigned char getPacketID() const override;
 
 public:
-    long long payload;
+    long long payload = 0;
 
 };
 
@@ -127,14 +127,14 @@ public:
 public:
     void read(ByteBuffer&) override;
     ClientboundPacket* createInstance() override;
-    unsigned char getPacketID() const override;
+    [[nodiscard]] unsigned char getPacketID() const override;
 
 public:
-    short id;
-    short x;
-    short y;
-    unsigned char type;
-    bool admin;
+    short id = 0;
+    short x = 0;
+    short y = 0;
+    unsigned char type = 0;
+    bool admin = false;
 
     enum ClickType {
         LEFT_CLICK = 0,
@@ -149,7 +149,7 @@ public:
 
 public:
     void write(ByteBuffer&) override;
-    unsigned char getPacketID() const override;
+    [[nodiscard]] unsigned char getPacketID() const override;
 
 public:
     std::string token;
@@ -162,11 +162,11 @@ public:
 
 public:
     void write(ByteBuffer&) override;
-    unsigned char getPacketID() const override;
+    [[nodiscard]] unsigned char getPacketID() const override;
 
 public:
-    unsigned char status;
-    short id;
+    unsigned char status = 0;
+    short id = 0;
 
     enum Status {
         OK = 0,
@@ -181,7 +181,7 @@ public:
 
 public:
     void write(ByteBuffer&) override;
-    unsigned char getPacketID() const override;
+    [[nodiscard]] unsigned char getPacketID() const override;
 
 public:
     std::vector<unsigned char> secret;
@@ -194,10 +194,10 @@ public:
 
 public:
     void write(ByteBuffer&) override;
-    unsigned char getPacketID() const override;
+    [[nodiscard]] unsigned char getPacketID() const override;
 
 public:
-    short id;
+    short id = 0;
     std::vector<unsigned char> compressedData;
 
 };
@@ -208,11 +208,11 @@ public:
 
 public:
     void write(ByteBuffer&) override;
-    unsigned char getPacketID() const override;
+    [[nodiscard]] unsigned char getPacketID() const override;
 
 public:
-    short protocolVersion;
-    short apiVersion;
+    short protocolVersion = 0;
+    short apiVersion = 0;
 
 };
 
@@ -222,9 +222,9 @@ public:
 
 public:
     void write(ByteBuffer&) override;
-    unsigned char getPacketID() const override;
+    [[nodiscard]] unsigned char getPacketID() const override;
 
 public:
-    long long payload;
+    long long payload = 0;
 
 };

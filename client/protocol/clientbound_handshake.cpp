@@ -1,6 +1,6 @@
 #include "protocol.h"
 
-ClientboundHandshakePacket::ClientboundHandshakePacket() {}
+ClientboundHandshakePacket::ClientboundHandshakePacket() = default;
 
 void ClientboundHandshakePacket::read(ByteBuffer& src) {
     serverName = src.readString();

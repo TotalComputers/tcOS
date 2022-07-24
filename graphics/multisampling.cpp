@@ -16,19 +16,21 @@ Multisampling::Multisampling(GLWindow* window, int samples)
     glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, GL_DEPTH24_STENCIL8, window->getWidth(), window->getHeight());
     glBindRenderbuffer(GL_RENDERBUFFER, 0);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
-    if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
         std::cerr << "Unable to create framebuffer" << std::endl;
+    }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glGenFramebuffers(1, &intermediateFbo);
     glBindFramebuffer(GL_FRAMEBUFFER, intermediateFbo);
     glGenTextures(1, &screenTexture);
     glBindTexture(GL_TEXTURE_2D, screenTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, window->getWidth(), window->getHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, window->getWidth(), window->getHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, screenTexture, 0);
-    if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
         std::cerr << "Unable to create intermediate framebuffer" << std::endl;
+    }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
@@ -43,11 +45,11 @@ Multisampling::~Multisampling() {
     intermediateFbo = 0;
     glDeleteTextures(1, &screenTexture);
     screenTexture = 0;
-    if(screenVao) {
+    if (screenVao) {
         delete screenVao;
         screenVao = nullptr;
     }
-    if(screenVbo) {
+    if (screenVbo) {
         delete screenVbo;
         screenVbo = nullptr;
     }
@@ -67,7 +69,7 @@ void Multisampling::createScreenVAO() {
     screenVbo = new VBO();
 
     screenVao->bind();
-    screenVbo->setData((void*)screenVertices, sizeof(screenVertices));
+    screenVbo->setData((void*) screenVertices, sizeof(screenVertices));
     screenVao->attribPointer2f(0, 4, 0);
     screenVao->attribPointer2f(1, 4, 2);
     
@@ -75,7 +77,7 @@ void Multisampling::createScreenVAO() {
     VBO::unbind();
 }
 
-void Multisampling::beforeRender() {
+void Multisampling::beforeRender() const {
     glClearColor(1, 1, 1, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
@@ -89,22 +91,24 @@ void Multisampling::afterRender() {
 }
 
 void Multisampling::render(Shader* screenShader) {
-    glClearColor(1, 1, 1, 1);
-    glClear(GL_COLOR_BUFFER_BIT);
-    glDisable(GL_DEPTH_TEST);
-    screenShader->bind();
-    screenVao->bind();
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, screenTexture);
-    glDrawArrays(GL_TRIANGLES, 0, 6);
-    VAO::unbind();
-    Shader::unbind();
+    if (screenVao) {
+        glClearColor(1, 1, 1, 1);
+        glClear(GL_COLOR_BUFFER_BIT);
+        glDisable(GL_DEPTH_TEST);
+        screenShader->bind();
+        screenVao->bind();
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, screenTexture);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        VAO::unbind();
+        Shader::unbind();
+    }
 }
 
-unsigned int Multisampling::getFramebufferHandle() {
+unsigned int Multisampling::getFramebufferHandle() const {
     return intermediateFbo;
 }
 
-unsigned int Multisampling::getScreenTexture() {
+unsigned int Multisampling::getScreenTexture() const {
     return screenTexture;
 }

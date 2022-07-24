@@ -11,14 +11,14 @@ bool PacketDecoder::onDisconnect(ConnectionContext*) {
 }
 
 bool PacketDecoder::decode(ConnectionContext* ctx, void* src, std::vector<void*>& dst) {
-    ByteBuffer* buf = (ByteBuffer*)src;
+    auto* buf = (ByteBuffer*) src;
 
-    if(buf->readableBytes() < 7) {
+    if (buf->readableBytes() < 7) {
         std::cout << "Received too small packet" << std::endl;
         return false;
     }
 
-    if(buf->readByte() != 0x0A || buf->readByte() != 0x1F) {
+    if (buf->readByte() != 0x0A || buf->readByte() != 0x1F) {
         std::cout << "Invalid magic value" << std::endl;
         return false;
     }
@@ -26,13 +26,13 @@ bool PacketDecoder::decode(ConnectionContext* ctx, void* src, std::vector<void*>
     unsigned char packetId = buf->readByte();
     ClientboundPacket* packet = ClientboundPacket::createInstanceFromID(packetId);
 
-    if(!packet) {
+    if (!packet) {
         std::cout << "Unable to find packet with id " << packetId << std::endl;
         return false;
     }
     
     int length = buf->readInt();
-    if(length != buf->readableBytes()) {
+    if (length != buf->readableBytes()) {
         std::cout << "Invalid packet length" << std::endl;
         return false;
     }

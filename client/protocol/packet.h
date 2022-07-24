@@ -10,7 +10,7 @@ public:
 public:
     virtual void read(ByteBuffer&) = 0;
     virtual ClientboundPacket* createInstance() = 0;
-    virtual unsigned char getPacketID() const = 0;
+    [[nodiscard]] virtual unsigned char getPacketID() const = 0;
     
 public:
     void registerPacket();
@@ -26,6 +26,6 @@ public:
 
 public:
     virtual void write(ByteBuffer&) = 0;
-    virtual unsigned char getPacketID() const = 0;
+    [[nodiscard]] virtual unsigned char getPacketID() const = 0;
 
 };

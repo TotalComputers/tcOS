@@ -1,6 +1,6 @@
 #include "protocol.h"
 
-ClientboundPingPacket::ClientboundPingPacket() {}
+ClientboundPingPacket::ClientboundPingPacket() = default;
 
 void ClientboundPingPacket::read(ByteBuffer& src) {
     payload = src.readLong();

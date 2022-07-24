@@ -1,6 +1,6 @@
 #include "protocol.h"
 
-ServerboundEncryptionPacket::ServerboundEncryptionPacket() {}
+ServerboundEncryptionPacket::ServerboundEncryptionPacket() = default;
 
 void ServerboundEncryptionPacket::write(ByteBuffer& dst) {
     dst.writeBytes(secret);

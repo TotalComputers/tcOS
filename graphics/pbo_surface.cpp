@@ -7,10 +7,10 @@ PBOSurface::PBOSurface(GLWindow* window)
     glGenBuffers(2, pbo);
 
     glBindBuffer(GL_PIXEL_PACK_BUFFER, pbo[0]);
-    glBufferData(GL_PIXEL_PACK_BUFFER, window->getWidth() * window->getHeight() * 4, 0, GL_STREAM_READ);
+    glBufferData(GL_PIXEL_PACK_BUFFER, window->getWidth() * window->getHeight() * 4, nullptr, GL_STREAM_READ);
 
     glBindBuffer(GL_PIXEL_PACK_BUFFER, pbo[1]);
-    glBufferData(GL_PIXEL_PACK_BUFFER, window->getWidth() * window->getHeight() * 4, 0, GL_STREAM_READ);
+    glBufferData(GL_PIXEL_PACK_BUFFER, window->getWidth() * window->getHeight() * 4, nullptr, GL_STREAM_READ);
 
     glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 
@@ -21,13 +21,13 @@ void PBOSurface::render(IRenderer* renderer) {
     renderer->render();
 
     glBindBuffer(GL_PIXEL_PACK_BUFFER, pbo[dma]);
-    glReadPixels(0, 0, window->getWidth(), window->getHeight(), GL_RGBA, GL_UNSIGNED_BYTE, 0);
+    glReadPixels(0, 0, window->getWidth(), window->getHeight(), GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 
     glBindBuffer(GL_PIXEL_PACK_BUFFER, pbo[read]);
-    unsigned char* data = (unsigned char*)glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
+    auto* data = (unsigned char*) glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
     unsigned scanline = 4 * window->getWidth();
 
-    for(int y = 0; y < window->getHeight(); y++) {
+    for (int y = 0; y < window->getHeight(); y++) {
         memcpy(buffer.raw8 + y * scanline, data + (window->getHeight() - 1 - y) * scanline, scanline);
     }
 

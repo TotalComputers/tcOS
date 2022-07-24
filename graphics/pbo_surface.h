@@ -6,17 +6,17 @@
 
 class PBOSurface : public ISurface {
 public:
-    PBOSurface(GLWindow*);
+    explicit PBOSurface(GLWindow*);
 
 public:
     void render(IRenderer*) override;
 
 public:
-    image_t buffer;
+    image_t buffer {};
 
 private:
-    GLWindow* window;
-    unsigned int pbo[2];
+    GLWindow* window = nullptr;
+    unsigned int pbo[2] {};
 
     int dma = 0;
     int read = 1;

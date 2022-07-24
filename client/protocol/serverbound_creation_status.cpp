@@ -1,6 +1,6 @@
 #include "protocol.h"
 
-ServerboundCreationStatusPacket::ServerboundCreationStatusPacket() {}
+ServerboundCreationStatusPacket::ServerboundCreationStatusPacket() = default;
 
 void ServerboundCreationStatusPacket::write(ByteBuffer& dst) {
     dst.writeByte(status);

@@ -1,6 +1,6 @@
 #include "protocol.h"
 
-ServerboundPongPacket::ServerboundPongPacket() {}
+ServerboundPongPacket::ServerboundPongPacket() = default;
 
 void ServerboundPongPacket::write(ByteBuffer& dst) {
     dst.writeLong(payload);

@@ -4,8 +4,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 
-Shader::Shader() {}
-
+Shader::Shader() = default;
 Shader::~Shader() {
     glDeleteProgram(handle);
 }
@@ -26,21 +25,21 @@ void Shader::setFragmentSource(const std::string& src) {
     fragmentSource = src;
 }
 
-unsigned int Shader::getHandle() {
+unsigned int Shader::getHandle() const {
     return handle;
 }
 
 unsigned createShader(unsigned type, const std::string& src) {
     const char* c_src = src.c_str();
     unsigned handle = glCreateShader(type);
-    glShaderSource(handle, 1, &c_src, 0);
+    glShaderSource(handle, 1, &c_src, nullptr);
     glCompileShader(handle);
 
     int res;
     char what[1024];
     glGetShaderiv(handle, GL_COMPILE_STATUS, &res);
-    if(!res) {
-        glGetShaderInfoLog(handle, 1024, 0, what);
+    if (!res) {
+        glGetShaderInfoLog(handle, 1024, nullptr, what);
         std::cerr << "Unable to compile shader (" << type << ")" << std::endl << " > " << what << std::endl;
         return 0;
     }
@@ -61,8 +60,8 @@ void Shader::create() {
     int res;
     char what[1024];
     glGetProgramiv(handle, GL_LINK_STATUS, &res);
-    if(!res) {
-        glGetProgramInfoLog(handle, 1024, 0, what);
+    if (!res) {
+        glGetProgramInfoLog(handle, 1024, nullptr, what);
         std::cerr << "Unable to link program: " << std::endl << " > " << what << std::endl;
     }
 
@@ -70,7 +69,7 @@ void Shader::create() {
     glDeleteShader(fragment);
 }
 
-void Shader::bind() {
+void Shader::bind() const {
     glUseProgram(handle);
 }
 
@@ -79,7 +78,7 @@ void Shader::unbind() {
 }
 
 void Shader::uniformBool(int loc, bool value) {
-    Shader::uniformInt(loc, (int)value);
+    Shader::uniformInt(loc, (int) value);
 }
 
 void Shader::uniformInt(int loc, int value) {
@@ -115,41 +114,41 @@ void Shader::uniformMat4f(int loc, const glm::mat4& value) {
 }
 
 void Shader::uniformBool(const std::string& name, bool value) {
-    Shader::uniformBool(uniformLocation(name), value);
+    Shader::uniformBool((int) uniformLocation(name), value);
 }
 
 void Shader::uniformInt(const std::string& name, int value) {
-    Shader::uniformInt(uniformLocation(name), value);
+    Shader::uniformInt((int) uniformLocation(name), value);
 }
 
 void Shader::uniformFloat(const std::string& name, float value) {
-    Shader::uniformFloat(uniformLocation(name), value);
+    Shader::uniformFloat((int) uniformLocation(name), value);
 }
 
 void Shader::uniformVec2f(const std::string& name, const glm::vec2& value) {
-    Shader::uniformVec2f(uniformLocation(name), value);
+    Shader::uniformVec2f((int) uniformLocation(name), value);
 }
 
 void Shader::uniformVec3f(const std::string& name, const glm::vec3& value) {
-    Shader::uniformVec3f(uniformLocation(name), value);
+    Shader::uniformVec3f((int) uniformLocation(name), value);
 }
 
 void Shader::uniformVec4f(const std::string& name, const glm::vec4& value) {
-    Shader::uniformVec4f(uniformLocation(name), value);
+    Shader::uniformVec4f((int) uniformLocation(name), value);
 }
 
 void Shader::uniformMat2f(const std::string& name, const glm::mat2& value) {
-    Shader::uniformMat2f(uniformLocation(name), value);
+    Shader::uniformMat2f((int) uniformLocation(name), value);
 }
 
 void Shader::uniformMat3f(const std::string& name, const glm::mat3& value) {
-    Shader::uniformMat3f(uniformLocation(name), value);
+    Shader::uniformMat3f((int) uniformLocation(name), value);
 }
 
 void Shader::uniformMat4f(const std::string& name, const glm::mat4& value) {
-    Shader::uniformMat4f(uniformLocation(name), value);
+    Shader::uniformMat4f((int) uniformLocation(name), value);
 }
 
-unsigned int Shader::uniformLocation(const std::string& name) {
+unsigned int Shader::uniformLocation(const std::string& name) const {
     return glGetUniformLocation(handle, name.c_str());
 }

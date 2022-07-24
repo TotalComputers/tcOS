@@ -1,6 +1,6 @@
 #include "protocol.h"
 
-ClientboundCreationRequestPacket::ClientboundCreationRequestPacket() {}
+ClientboundCreationRequestPacket::ClientboundCreationRequestPacket() = default;
 
 void ClientboundCreationRequestPacket::read(ByteBuffer& src) {
     width = src.readShort();

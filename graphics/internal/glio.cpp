@@ -1,10 +1,9 @@
 #include "glio.h"
 #include "../../common/thread_safety.h"
-#include <iostream>
 #include <mutex>
 #include <algorithm>
 
-std::mutex gl_mutex;
+static std::mutex gl_mutex;
 
 GLIO::GLIO(IWindowFactory* factory)
     : factory(factory) {}
@@ -17,7 +16,7 @@ void GLIO::init() {
     gl_mutex.unlock();
     inputHandlers = gl->getInputHandlers();
     free(reference_buf.data);
-    reference_buf.data = 0;
+    reference_buf.data = nullptr;
 }
 
 void GLIO::set_frame(image_t frame)  {
@@ -34,17 +33,19 @@ void GLIO::destroy() {
 }
 
 image_t& GLIO::provide_frame() {
-    if(!gl) return reference_buf;
+    if (!gl) {
+        return reference_buf;
+    }
     gl_mutex.lock();
     run_in_main_thread([&]() {
         gl->doLoopWork();
     });
     gl_mutex.unlock();
-    return ((PBOSurface*)gl->getSurface())->buffer;
+    return ((PBOSurface*) gl->getSurface())->buffer;
 }
 
 void GLIO::handle_touch(int x, int y, bool is_right, bool admin) {
-    for(IInputHandler* handler : inputHandlers) {
+    for (IInputHandler* handler : inputHandlers) {
         handler->handleTouch(x, y, is_right, admin);
     }
 }

@@ -38,8 +38,8 @@ public:
     void writeBytes(ByteBuffer&);
 
     void ensureWritableBytes(size_t);
-    size_t readableBytes();
-    size_t length();
+    size_t readableBytes() const;
+    size_t length() const;
 
 public:
     size_t readerIdx = 0;

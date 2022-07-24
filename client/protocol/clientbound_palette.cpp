@@ -1,11 +1,12 @@
 #include "protocol.h"
 
-ClientboundPalettePacket::ClientboundPalettePacket() {}
+ClientboundPalettePacket::ClientboundPalettePacket() = default;
 
 void ClientboundPalettePacket::read(ByteBuffer& src) {
     palette.resize(src.readInt());
-    for(int i = 0; i < palette.size(); i++)
-        palette[i] = src.readInt();
+    for (int& i : palette) {
+        i = src.readInt();
+    }
 }
 
 ClientboundPacket* ClientboundPalettePacket::createInstance() {

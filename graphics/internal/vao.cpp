@@ -9,16 +9,16 @@ VAO::~VAO() {
     glDeleteVertexArrays(1, &handle);
 }
 
-unsigned int VAO::getHandle() {
+unsigned int VAO::getHandle() const {
     return handle;
 }
 
-void VAO::bind() {
+void VAO::bind() const {
     glBindVertexArray(handle);
 }
 
 void VAO::attribPointerf(unsigned id, unsigned count, unsigned stride, long long offset) {
-    glVertexAttribPointer(id, count, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)(offset * sizeof(float)));
+    glVertexAttribPointer(id, (int) count, GL_FLOAT, GL_FALSE, (int) (stride * sizeof(float)), (void*) (offset * sizeof(float)));
     glEnableVertexAttribArray(id);
 }
 

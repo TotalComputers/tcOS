@@ -6,12 +6,12 @@ public:
     ~VBO();
 
 public:
-    unsigned int getHandle();
-    void bind();
-    void setData(void*, unsigned long long);
+    [[nodiscard]] unsigned int getHandle() const;
+    void bind() const;
+    void setData(void*, unsigned long long) const;
     static void unbind();
 
 private:
-    unsigned int handle;
+    unsigned int handle = 0;
 
 };

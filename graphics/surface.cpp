@@ -2,7 +2,7 @@
 
 int CombinedSurface::addSurface(ISurface* surface) {
     surfaces.push_back(surface);
-    return surfaces.size() - 1;
+    return (int) (surfaces.size() - 1);
 }
 
 ISurface* CombinedSurface::getSurface(int id) {
@@ -10,6 +10,10 @@ ISurface* CombinedSurface::getSurface(int id) {
 }
 
 void CombinedSurface::render(IRenderer* renderer) {
-    for(ISurface*& surface : surfaces)
+    for (ISurface*& surface : surfaces) {
         surface->render(renderer);
+    }
 }
+
+CombinedSurface::~CombinedSurface() = default;
+ISurface::~ISurface() = default;

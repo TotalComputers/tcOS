@@ -9,12 +9,12 @@
 
 class GLIO : public IOInterface {
 public:
-    GLIO(IWindowFactory*);
+    explicit GLIO(IWindowFactory*);
 
 public:
     void init() override;
     void destroy() override;
-    image_t& provide_frame();
+    image_t& provide_frame() override;
     void set_frame(image_t) override;
     void handle_touch(int, int, bool, bool) override;
     void addInputHandler(IInputHandler*);
@@ -23,15 +23,15 @@ public:
 
 private:
     IWindowFactory* factory;
-    image_t reference_buf;
-    GLWindow* gl;
+    image_t reference_buf {};
+    GLWindow* gl = nullptr;
     std::vector<IInputHandler*> inputHandlers;
 
 };
 
 class GLIOFactory : public IOFactory {
 public:
-    GLIOFactory(IWindowFactory*);
+    explicit GLIOFactory(IWindowFactory*);
 
 public:
     std::shared_ptr<IOInterface> create() override;

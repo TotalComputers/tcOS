@@ -4,10 +4,10 @@
 bool PacketLengthPrefixer::encode(ConnectionContext*, void* in, void*& out) {
     out = new ByteBuffer();
 
-    ByteBuffer* inbuf = (ByteBuffer*)in;
-    ByteBuffer* outbuf = (ByteBuffer*)out;
+    auto* inbuf = (ByteBuffer*) in;
+    auto* outbuf = (ByteBuffer*) out;
 
-    outbuf->writeVarInt(inbuf->readableBytes());
+    outbuf->writeVarInt((int) inbuf->readableBytes());
     outbuf->writeBytes(inbuf->data);
 
     delete inbuf;

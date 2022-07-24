@@ -12,20 +12,20 @@ public:
 
 public:
     void createScreenVAO();
-    void beforeRender();
+    void beforeRender() const;
     void afterRender();
     void render(Shader*);
-    unsigned int getFramebufferHandle();
-    unsigned int getScreenTexture();
+    [[nodiscard]] unsigned int getFramebufferHandle() const;
+    [[nodiscard]] unsigned int getScreenTexture() const;
 
 private:
-    GLWindow* window;
-    unsigned int framebuffer;
-    unsigned int msColorAttachment;
-    unsigned int rbo;
-    unsigned int intermediateFbo;
-    unsigned int screenTexture;
-    VAO* screenVao;
-    VBO* screenVbo;
+    GLWindow* window = nullptr;
+    unsigned int framebuffer = 0;
+    unsigned int msColorAttachment = 0;
+    unsigned int rbo = 0;
+    unsigned int intermediateFbo = 0;
+    unsigned int screenTexture = 0;
+    VAO* screenVao = nullptr;
+    VBO* screenVbo = nullptr;
 
 };

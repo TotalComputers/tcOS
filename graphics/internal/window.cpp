@@ -1,22 +1,22 @@
 #include <glad/glad.h>
 #include "window.h"
 #include "../../common/thread_safety.h"
-#include "../../common/timer.h"
 #include <iostream>
 #include <algorithm>
+#include <utility>
 
 GLWindow::GLWindow(int w, int h, std::string title)
-    : width(w), height(h), title(title), renderer(nullptr), surface(nullptr), isHeadless(false) {
-    element = new PositionedElement(0.f, 0.f, (float)w, (float)h);
+    : width(w), height(h), title(std::move(title)), renderer(nullptr), surface(nullptr), isHeadless(false) {
+    element = new PositionedElement(0.f, 0.f, (float) w, (float) h);
 }
 
 GLWindow::~GLWindow() {
     destroy();
-    if(surface) {
+    if (surface) {
         delete surface;
         surface = nullptr;
     }
-    if(renderer) {
+    if (renderer) {
         delete renderer;
         renderer = nullptr;
     }
@@ -27,11 +27,13 @@ bool GLWindow::create() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-    if(isHeadless) glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+    if (isHeadless) {
+        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+    }
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    handle = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
-    if(!handle) {
+    handle = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
+    if (!handle) {
         std::cout << "Unable to create window" << std::endl;
         return false;
     }
@@ -49,11 +51,11 @@ GLFWwindow* GLWindow::getHandle() {
     return handle;
 }
 
-int GLWindow::getWidth() {
+int GLWindow::getWidth() const {
     return width;
 }
 
-int GLWindow::getHeight() {
+int GLWindow::getHeight() const {
     return height;
 }
 
@@ -67,8 +69,9 @@ bool GLWindow::shouldClose() {
 
 void GLWindow::doLoopWork() {
     makeCurrent();
-    if(surface && renderer)
+    if (surface && renderer) {
         surface->render(renderer);
+    }
     glfwPollEvents();
     glfwSwapBuffers(handle);
 }
@@ -105,8 +108,9 @@ PositionedElement* GLWindow::getElement() {
 
 void GLWindow::headless() {
     isHeadless = true;
-    if(handle)
+    if (handle) {
         glfwHideWindow(handle);
+    }
 }
 
 void GLWindow::addInputHandler(IInputHandler* handler) {

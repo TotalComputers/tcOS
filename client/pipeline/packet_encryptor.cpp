@@ -5,8 +5,8 @@
 bool PacketEncryptor::encode(ConnectionContext* ctx, void* in, void*& out) {
     out = new ByteBuffer();
     
-    ByteBuffer* inbuf = (ByteBuffer*)in;
-    ByteBuffer* dstbuf = (ByteBuffer*)out;
+    auto* inbuf = (ByteBuffer*) in;
+    auto* dstbuf = (ByteBuffer*) out;
 
     dstbuf->writeBytes(aes_encrypt(inbuf->readBytes(inbuf->readableBytes())));
 

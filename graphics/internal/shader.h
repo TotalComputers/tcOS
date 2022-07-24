@@ -13,9 +13,9 @@ public:
     void setFragmentFile(const std::string&);
     void setVertexSource(const std::string&);
     void setFragmentSource(const std::string&);
-    unsigned int getHandle();
+    [[nodiscard]] unsigned int getHandle() const;
     void create();
-    void bind();
+    void bind() const;
     static void unbind();
 
     static void uniformBool (int, bool);
@@ -38,10 +38,10 @@ public:
     void uniformMat3f(const std::string&, const glm::mat3&);
     void uniformMat4f(const std::string&, const glm::mat4&);
 
-    unsigned int uniformLocation(const std::string&);
+    unsigned int uniformLocation(const std::string&) const;
 
 private:
     std::string vertexSource, fragmentSource;
-    unsigned int handle;
+    unsigned int handle = 0;
 
 };

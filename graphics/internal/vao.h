@@ -8,8 +8,8 @@ public:
     ~VAO();
 
 public:
-    unsigned int getHandle();
-    void bind();
+    [[nodiscard]] unsigned int getHandle() const;
+    void bind() const;
     void attribPointerf(unsigned, unsigned, unsigned, long long);
     void attribPointer4f(unsigned, unsigned, long long);
     void attribPointer3f(unsigned, unsigned, long long);

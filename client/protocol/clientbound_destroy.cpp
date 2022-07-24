@@ -1,6 +1,6 @@
 #include "protocol.h"
 
-ClientboundDestroyPacket::ClientboundDestroyPacket() {}
+ClientboundDestroyPacket::ClientboundDestroyPacket() = default;
 
 void ClientboundDestroyPacket::read(ByteBuffer& src) {
     id = src.readShort();

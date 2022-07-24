@@ -1,6 +1,6 @@
 #include "protocol.h"
 
-ClientboundTouchPacket::ClientboundTouchPacket() {}
+ClientboundTouchPacket::ClientboundTouchPacket() = default;
 
 void ClientboundTouchPacket::read(ByteBuffer& src) {
     id = src.readShort();

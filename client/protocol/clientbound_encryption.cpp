@@ -1,6 +1,6 @@
 #include "protocol.h"
 
-ClientboundEncryption::ClientboundEncryption() {}
+ClientboundEncryption::ClientboundEncryption() = default;
 
 void ClientboundEncryption::read(ByteBuffer& src) {
     publicKey = src.readBytes(src.readableBytes());

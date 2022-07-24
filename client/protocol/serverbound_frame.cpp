@@ -1,6 +1,6 @@
 #include "protocol.h"
 
-ServerboundFramePacket::ServerboundFramePacket() {}
+ServerboundFramePacket::ServerboundFramePacket() = default;
 
 void ServerboundFramePacket::write(ByteBuffer& dst) {
     dst.writeShort(id);

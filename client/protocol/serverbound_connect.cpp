@@ -1,6 +1,6 @@
 #include "protocol.h"
 
-ServerboundConnectPacket::ServerboundConnectPacket() {}
+ServerboundConnectPacket::ServerboundConnectPacket() = default;
 
 void ServerboundConnectPacket::write(ByteBuffer& dst) {
     dst.writeString(token);

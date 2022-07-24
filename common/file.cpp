@@ -13,7 +13,7 @@ std::string readFile(const std::string& path) {
         ss << file.rdbuf();
         file.close();
         return ss.str();
-    } catch(std::ifstream::failure& e) {
+    } catch (std::ifstream::failure& e) {
         std::cerr << "Unable to read file `" << path << "`: " << e.what() << std::endl;
     }
     return "";

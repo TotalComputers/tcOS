@@ -58,7 +58,7 @@ public:
     bool decode(ConnectionContext*, void*, std::vector<void*>&) override;
 
 private:
-    ByteBuffer* buf;
+    ByteBuffer* buf = nullptr;
     int remaining = 0;
 
 };

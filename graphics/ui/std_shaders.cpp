@@ -4,7 +4,9 @@ Shader*      CommonShaders::DefaultDisplay::shader;
 unsigned int CommonShaders::DefaultDisplay::u_matLoc;
 
 Shader* CommonShaders::DefaultDisplay::Get() {
-    if(shader) return shader;
+    if (shader) {
+        return shader;
+    }
     shader = new Shader();
     shader->setVertexFile("shaders/common/displayDefault.vert");
     shader->setFragmentFile("shaders/common/displayDefault.frag");
@@ -30,7 +32,9 @@ unsigned int CommonShaders::BlendDisplay::u_matLoc;
 unsigned int CommonShaders::BlendDisplay::u_blendFactorLoc;
 
 Shader* CommonShaders::BlendDisplay::Get() {
-    if(shader) return shader;
+    if (shader) {
+        return shader;
+    }
     shader = new Shader();
     shader->setVertexFile("shaders/common/blendDisplay.vert");
     shader->setFragmentFile("shaders/common/blendDisplay.frag");

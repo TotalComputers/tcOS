@@ -1,6 +1,6 @@
 #include "protocol.h"
 
-ClientboundDisconnectPacket::ClientboundDisconnectPacket() {}
+ClientboundDisconnectPacket::ClientboundDisconnectPacket() = default;
 
 void ClientboundDisconnectPacket::read(ByteBuffer& src) {
     reason = src.readString();

@@ -4,7 +4,7 @@ std::shared_ptr<IOInterface>& IOStorage::request(short id) {
     return storage[id];
 }
 
-void IOStorage::put(std::shared_ptr<IOInterface> io) {
+void IOStorage::put(const std::shared_ptr<IOInterface>& io) {
     storage[io->id] = io;
 }
 
@@ -12,11 +12,11 @@ void IOStorage::remove(short id) {
     storage.erase(id);
 }
 
-void IOStorage::remove(std::shared_ptr<IOInterface> io) {
+void IOStorage::remove(const std::shared_ptr<IOInterface>& io) {
     auto it = storage.begin();
-    while(it != storage.end()) {
-        if(it->second == io) {
-            it = storage.erase(it);
+    while (it != storage.end()) {
+        if (it->second == io) {
+            storage.erase(it);
             return;
         } 
         it++;

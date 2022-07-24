@@ -7,7 +7,7 @@ class ConnectionContext {
 public:
     ConnectionContext(Pipeline*, uv_stream_t*);
 
-    void write(void*, bool async = false);
+    void write(void*, bool = false);
     void read(ByteBuffer*);
 
 public:

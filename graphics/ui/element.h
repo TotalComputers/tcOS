@@ -7,9 +7,9 @@
 #include <map>
 
 #if defined(_WIN32) && !defined(__CYGWIN__) && !defined(__SCITECH_SNAP__)
-typedef void(__stdcall* glDeleteFn)(int, const unsigned int*); 
+typedef void(__stdcall* glDeleteFn) (int, const unsigned int*);
 #else
-typedef void(*glDeleteFn)(int, const unsigned int*);
+typedef void(*glDeleteFn) (int, const unsigned int*);
 #endif
 
 class PositionedElement {
@@ -25,9 +25,9 @@ public:
     void removeChild(PositionedElement*);
     void removeChild(int);
     float getX();
-    float getY();
-    float getWidth();
-    float getHeight();
+    [[nodiscard]] float getY() const;
+    [[nodiscard]] float getWidth() const;
+    [[nodiscard]] float getHeight() const;
     float getLeft();
     float getTop();
     float getRight();
@@ -72,17 +72,17 @@ public:
     void recache(int);
     virtual void display() override;
     void bindLayer(int, int);
-    int getSamples();
+    [[nodiscard]] int getSamples() const;
     void setSamples(unsigned char);
 
 private:
     std::vector<unsigned int> layers;
     std::vector<int> binding;
     std::map<unsigned int, glDeleteFn> deletable;
-    Shader* displayShader;
+    Shader* displayShader = nullptr;
     unsigned char numSamples;
-    glm::mat4 matrix;
-    unsigned int matrixLoc;
+    glm::mat4 matrix {};
+    unsigned int matrixLoc = 0;
 
 private:
     static VAO* vao;

@@ -14,8 +14,8 @@ public:
     bool create();
     void destroy();
     GLFWwindow* getHandle();
-    int getWidth();
-    int getHeight();
+    int getWidth() const;
+    int getHeight() const;
     std::string getTitle();
     bool shouldClose();
     void doLoopWork();
@@ -32,7 +32,7 @@ public:
     std::vector<IInputHandler*> getInputHandlers();
 
 private:
-    GLFWwindow* handle;
+    GLFWwindow* handle = nullptr;
     int width, height;
     std::string title;
     ISurface* surface;

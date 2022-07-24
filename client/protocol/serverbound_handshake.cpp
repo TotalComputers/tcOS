@@ -1,6 +1,6 @@
 #include "protocol.h"
 
-ServerboundHandshakePacket::ServerboundHandshakePacket() {}
+ServerboundHandshakePacket::ServerboundHandshakePacket() = default;
 
 void ServerboundHandshakePacket::write(ByteBuffer& dst) {
     dst.writeShort(protocolVersion);
